@@ -4,6 +4,9 @@ Consolidated home for demos, decks, and talks. Each talk lives in its own
 date-prefixed folder and is fully self-contained — open its `index.html` in a
 browser to present; no server, build step, or network required.
 
+**Live site:** <https://chris-at-tyler.github.io/presentations/> (GitHub Pages
+from `main`; this repo is public — keep talk content public-safe).
+
 ## Talks
 
 | Date    | Talk                                                       | Audience                    | Live demo | Notes                       |
@@ -30,6 +33,9 @@ cd 2026-09-my-next-talk
 # edit parts/slides.html (content) and parts/theme.css (look)
 ./assemble.sh          # → index.html
 ```
+
+Then add the talk to the table above and to the root `index.html` landing page
+— pushing to `main` publishes it on the live site.
 
 Presenting: arrow keys to navigate, `S` for speaker view with notes, `F` for
 fullscreen, `Esc` for slide overview.
