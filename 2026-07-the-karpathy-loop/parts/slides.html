@@ -1,0 +1,322 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Lunch &amp; Learn · Working with AI Agents · Part 4</div>
+    <h1>The Karpathy Loop</h1>
+    <p class="subtitle">Autonomous research while you sleep — what happens when the human<br>leaves the loop entirely, and why it's three files and a markdown program.</p>
+    <p class="credit">
+      Based on <strong>karpathy/autoresearch</strong> (March 2026) — cloned locally in <code>third-party/autoresearch</code><br>
+      Part 1: find your unknowns · Part 2: write great skills · Part 3: spec → tickets · Part 4: goodnight
+    </p>
+  </div>
+  <aside class="notes">Series finale energy. Promise: understand the loop deeply enough to run it on YOUR problems — the demo does exactly that, live, without a GPU.</aside>
+</section>
+
+<!-- 2 · The autonomy slider -->
+<section>
+  <div class="kicker">The Arc</div>
+  <h2>Four talks, one slider</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>P1–P2</h3>
+      <p class="lead">Human answers everything.</p>
+      <p>Grilling: one question at a time, every decision yours. Skills engineered so agents behave predictably.</p>
+    </div>
+    <div class="card">
+      <h3>P3</h3>
+      <p class="lead">Human at the gates.</p>
+      <p>The pipeline runs; you approve at the seam check and the quiz gate. Agents work the ticket frontier.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--amber)">P4 · tonight</h3>
+      <p class="lead">Human asleep.</p>
+      <p>The agent experiments overnight, alone. The only human artifact left in the loop is one markdown file.</p>
+    </div>
+  </div>
+  <div class="bigquote" style="font-size: 0.95em; margin-top: 0.8em;">
+    "One day, frontier AI research used to be done by meat computers… This repo is the story of how it all began."
+    <span class="attr">— @karpathy, README, March 2026</span>
+  </div>
+  <aside class="notes">The quote is deadpan sci-fi from the actual README — read it aloud. Frame: this isn't about LLM training specifically; it's about a SHAPE of work that generalizes. The demo proves that claim.</aside>
+</section>
+
+<!-- 3 · What autoresearch is -->
+<section>
+  <div class="kicker">The Project</div>
+  <h2>autoresearch, in one slide</h2>
+  <ul class="takeaways">
+    <li><strong>A real LLM training setup, agent-operated.</strong> Simplified single-GPU nanochat: the agent modifies the training code, trains 5 minutes, keeps or discards, repeats — overnight.</li>
+    <li><strong>~12 experiments/hour, ~100 while you sleep.</strong> You wake up to a log of experiments and (hopefully) a better model.</li>
+    <li><strong>21k+ GitHub stars within days</strong> of the March 2026 release; forks for macOS, MLX, Windows, AMD within the week.</li>
+  </ul>
+  <p class="small muted" style="margin-top: 0.6em;">The premise inversion: "you're not touching any of the Python files like you normally would as a researcher. Instead, you are programming the <code>program.md</code>."</p>
+  <aside class="notes">Emphasize it's REAL research infrastructure in miniature, not a toy: Muon+AdamW optimizer, banded attention windows, bits-per-byte eval. Small enough to read in an evening — that's deliberate.</aside>
+</section>
+
+<!-- 4 · Three files -->
+<section>
+  <div class="kicker">The Anatomy</div>
+  <h2>The whole repo is three files</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--coral)">prepare.py</h3>
+      <p class="lead">Fixed. Untouchable.</p>
+      <p>Data prep, tokenizer, dataloader, the evaluation function. The ground truth the agent cannot game.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">train.py</h3>
+      <p class="lead">The agent edits this. Only this.</p>
+      <p>630 lines: full GPT model, optimizer, training loop. Architecture, hyperparameters, batch size — all fair game.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--amber)">program.md</h3>
+      <p class="lead">The <em>human</em> edits this.</p>
+      <p>The agent's instructions — "essentially a super lightweight skill." Your research org, as markdown.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 0.8em;">The division of labor is the design: <strong>machines iterate on code, humans iterate on the program that directs the machines.</strong></p>
+  <aside class="notes">"Super lightweight skill" is Karpathy's own phrase — the room built skills in part 2; this is the same object running an org of one. Also note what's NOT here: no framework, no orchestrator, no config system.</aside>
+</section>
+
+<!-- 5 · The loop -->
+<section>
+  <div class="kicker">The Loop</div>
+  <h2>Propose · run · evaluate · keep-or-reset</h2>
+  <div class="diagram" style="margin-top: 0.7em;">
+    <span class="dbox">1 · edit train.py<span class="sub">one experimental idea</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">2 · git commit<span class="sub">the hypothesis, recorded</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">3 · train 5 min<span class="sub">uv run train.py &gt; run.log</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">4 · grep val_bpb<span class="sub">one number decides</span></span>
+  </div>
+  <div class="diagram">
+    <span class="dbox prim">improved → advance the branch<span class="sub">the commit stays — knowledge accumulates</span></span>
+    <span class="dbox exp">worse → git reset --hard<span class="sub">failure costs nothing but five minutes</span></span>
+  </div>
+  <p class="small muted" style="margin-top: 0.7em;"><strong>Git is the experiment ledger.</strong> The branch's history is exactly the sequence of ideas that worked; discards leave no trace. Plus a <code>results.tsv</code> logging every attempt — keep, discard, and crash alike.</p>
+  <aside class="notes">The elegance: no experiment-tracking platform, no MLflow — a branch and a TSV. Crash handling is judgment-based: typo → fix and rerun; fundamentally broken idea → log crash, move on.</aside>
+</section>
+
+<!-- 6 · Design choices -->
+<section>
+  <div class="kicker">Why It Works</div>
+  <h2>Constraints are the science</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>One file to modify</strong><span class="why">scope stays manageable, every diff reviewable in the morning</span></li>
+    <li><span class="n">2</span><strong>Fixed 5-minute budget</strong><span class="why">every experiment comparable no matter what changed — model size, batch, architecture</span></li>
+    <li><span class="n">3</span><strong>One metric: val_bpb</strong><span class="why">bits-per-byte is vocab-size-independent, so architectural changes compare fairly</span></li>
+    <li><span class="n">4</span><strong>No new dependencies</strong><span class="why">the search space is ideas, not packages</span></li>
+    <li><span class="n">5</span><strong>The simplicity criterion</strong><span class="why">"an improvement of ~0 but much simpler code? Keep." — complexity is a cost the loop actively pays down</span></li>
+  </ul>
+  <aside class="notes">Each constraint kills a failure mode: unbounded scope, incomparable runs, metric ambiguity, dependency sprawl, complexity ratchet. Part-2 echo: these are completion criteria and guardrails, engineered.</aside>
+</section>
+
+<!-- 7 · program.md IS a skill -->
+<section>
+  <div class="kicker amber">The Series Payoff</div>
+  <h2>You already know how to read program.md</h2>
+  <div class="cols">
+    <div style="flex: 1.2;">
+      <div class="file">
+        <div class="fname">autoresearch/program.md — excerpts</div>
+        <pre><span class="dim">## Experimentation</span>
+<span class="good">The goal is simple: get the lowest val_bpb.</span>
+
+<span class="dim">What you CANNOT do:</span>
+- Modify prepare.py. <span class="good">It is read-only.</span>
+- Install new packages or add dependencies.
+- Modify the evaluation harness.
+
+<span class="dim">## The experiment loop</span>
+LOOP FOREVER:
+1. Look at the git state …
+4. Run: uv run train.py &gt; run.log 2&gt;&amp;1
+   <span class="good">(do NOT use tee or let output flood
+    your context)</span>
+8. If val_bpb improved, you "advance"
+9. If equal or worse, git reset</pre>
+      </div>
+    </div>
+    <div>
+      <ul class="principles">
+        <li><span class="n">✓</span><strong>Numeric completion criterion</strong><span class="why">"lowest val_bpb" — checkable, exhaustive, ungameable</span></li>
+        <li><span class="n">✓</span><strong>Hard guardrails</strong><span class="why">the eval harness is out of reach — Goodhart, pre-empted</span></li>
+        <li><span class="n">✓</span><strong>Context discipline</strong><span class="why">"don't let output flood your context" — window as a budget</span></li>
+        <li><span class="n">✓</span><strong>Steps + reference, one file</strong><span class="why">part 2's information hierarchy, in the wild</span></li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">This slide earns the series: the room can now READ this artifact critically. Ask them: what would you prune? What leading words is it using? ("advance", "LOOP FOREVER")</aside>
+</section>
+
+<!-- 8 · NEVER STOP -->
+<section>
+  <div class="kicker amber">The Boldest Line</div>
+  <h2>NEVER STOP</h2>
+  <div class="bigquote" style="font-size: 1.0em;">
+    "Do NOT pause to ask the human if you should continue… The human might be asleep… You are autonomous. If you run out of ideas, <em>think harder</em> — read papers referenced in the code, re-read the in-scope files for new angles, try combining previous near-misses… The loop runs until the human interrupts you, period."
+    <span class="attr">— program.md</span>
+  </div>
+  <p class="small" style="margin-top: 0.6em;">Part 2 named the disease: <strong>premature completion</strong> — agents drift toward "being done." This is the strongest antidote ever written into a skill: the completion criterion is <em>externalized to the human's Ctrl-C</em>.</p>
+  <aside class="notes">"Think harder" as an instruction to a machine is the most 2026 sentence in the talk. Note the design honesty: agents naturally stop and check in; overnight autonomy required explicitly engineering AGAINST the default.</aside>
+</section>
+
+<!-- 9 · What the world did -->
+<section>
+  <div class="kicker">Impact</div>
+  <h2>Point it at anything with a number</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Shopify</h3>
+      <p class="lead">53% faster template rendering.</p>
+      <p>CEO Tobi Lutke pointed the loop at their templating engine: 93 automated commits, as reported. Not ML — a rendering benchmark.</p>
+    </div>
+    <div class="card">
+      <h3>The forks, within a week</h3>
+      <p class="lead">macOS · MLX · Windows · AMD.</p>
+      <p>Plus generalizations like <code>autoexp</code>: "for any quantifiable metric project."</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 0.8em;">The loop needs exactly four things: <strong>one file to edit · one command to run · one number to improve · git to keep or discard.</strong> If your problem fits that shape, the loop runs on it.</p>
+  <aside class="notes">This is the bridge to the demo: we're about to prove the generalization claim live, on a laptop, with milliseconds as the metric. Have the room think: what in OUR codebase has a number? Query times, bundle size, test duration, memory…</aside>
+</section>
+
+<!-- 10 · Honest caveats -->
+<section>
+  <div class="kicker" style="color: var(--coral)">Before You Run It</div>
+  <h2>The fine print</h2>
+  <ul class="takeaways">
+    <li><strong>It runs with permissions disabled.</strong> "Spin up your Claude/Codex… and disable all permissions." Overnight autonomy means YOLO mode — run it in a sandbox or dedicated machine, never on a repo you can't afford to surprise you.</li>
+    <li><strong>Tokens are the electricity bill.</strong> ~100 experiments a night is ~100 agent sessions. Know your plan's limits before you sleep.</li>
+    <li><strong>Goodhart's law never sleeps either.</strong> The agent optimizes the number — exactly the number. The eval harness must be out of reach and correctness must be part of the metric. (Our demo's harness verifies output against a reference for exactly this reason.)</li>
+  </ul>
+  <aside class="notes">Work-audience credibility slide. The Goodhart point is why prepare.py is read-only and why bench.py checks correctness — an agent WILL find the degenerate optimum if you leave it reachable.</aside>
+</section>
+
+<!-- 11 · Demo intro -->
+<section>
+  <div class="kicker amber">Live Demo</div>
+  <h2>Karpathy loop at home</h2>
+  <div class="cols">
+    <div>
+      <div class="file">
+        <div class="fname">demo/ — same anatomy, no GPU</div>
+        <pre>bench.py    <span class="dim">= prepare.py — fixed harness,
+              correctness-checked vs a reference,
+              prints</span> bench_ms
+target.py   <span class="dim">= train.py — naive analytics fn,
+              measured</span> <span class="bad">81.8 ms</span> <span class="dim">baseline</span>
+program.md  <span class="dim">= the loop, adapted verbatim</span></pre>
+      </div>
+      <p class="small muted">Each experiment: ~2 seconds instead of 5 minutes — the loop shape at talk speed.</p>
+    </div>
+    <div>
+      <div class="prompt">
+        <span class="plabel">Karpathy's README prompt, verbatim</span>
+        Hi have a look at program.md and let's kick off a new experiment! let's do the setup first.
+      </div>
+      <p class="small muted">Watch for:</p>
+      <ul class="small muted" style="line-height: 1.7;">
+        <li>baseline first, always</li>
+        <li>a <strong>keep</strong> — the branch advances</li>
+        <li>a <strong>discard</strong> — git reset, zero cost</li>
+        <li>results.tsv growing, and it <strong>won't stop</strong> until I interrupt</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">SWITCH TO TERMINAL — pre-flight in DEMO.md (sandbox copied to /tmp with its own git repo). Interrupt after 3-4 cycles with the line: "on an H100 this exact shape ran ~100 experiments a night on a real GPT."</aside>
+</section>
+
+<!-- 12 · Fallback: adapted program -->
+<section>
+  <div class="kicker">What A Run Looks Like · 1/3</div>
+  <div class="file">
+    <div class="fname">demo/program.md — the adaptation is one substitution</div>
+    <pre><span class="dim">## Experimentation</span>
+<span class="good">The goal is simple: get the lowest bench_ms.</span> The harness
+verifies your output against a reference implementation
+first — correct: False means the run does not count,
+no matter how fast it is.
+
+What you CANNOT do:
+- Modify bench.py. <span class="good">It is read-only ground truth.</span>
+- Add dependencies or import beyond the standard library.
+
+LOOP FOREVER:
+2. Change target.py with one experimental idea.
+3. git commit
+4. Run: python3 bench.py &gt; run.log 2&gt;&amp;1
+8. If bench_ms improved (lower), you "advance."
+9. If equal or worse, git reset --hard.
+
+<span class="good">NEVER STOP</span>: … The loop runs until the human
+interrupts you, period.</pre>
+  </div>
+  <aside class="notes">Fallback if live stalls. Point out how little changed from Karpathy's original — val_bpb became bench_ms and that's essentially it. The org program is portable; only the experiment swapped.</aside>
+</section>
+
+<!-- 13 · Fallback: the ledger -->
+<section>
+  <div class="kicker">What A Run Looks Like · 2/3</div>
+  <div class="file">
+    <div class="fname">/tmp/karpathy-loop/results.tsv — mid-run</div>
+    <pre>commit	bench_ms	status	description
+a41f09c	81.751	<span class="good">keep</span>	baseline
+7c22b1e	31.442	<span class="good">keep</span>	set for session dedupe instead of list scan
+e9d0f44	4.187	<span class="good">keep</span>	Counter for per-user counts, drop O(u×n) loop
+b31c877	4.512	<span class="bad">discard</span>	heapq.nlargest for top-10 (slower at n=250)
+f08a2d5	0.000	<span class="bad">crash</span>	broke top-10 tie ordering (correct: False)
+6b77e10	1.093	<span class="good">keep</span>	single pass: one loop fills all four counters</pre>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">81.8 ms → 1.1 ms in five experiments — <strong>75× faster</strong> — including one dead end and one crash, both costing nothing. The crash row is the correctness check earning its keep: fast-but-wrong scored 0.</p>
+  <aside class="notes">This table is representative of a real run (the headroom is measured; a live run's exact path varies). The narrative beats: big structural wins first, a plausible idea that loses, an idea that broke correctness and got caught.</aside>
+</section>
+
+<!-- 14 · Fallback: git as ledger -->
+<section>
+  <div class="kicker">What A Run Looks Like · 3/3</div>
+  <h2>The branch is the paper trail</h2>
+  <div class="file">
+    <div class="fname">git log --oneline on loop/jul23</div>
+    <pre><span class="good">6b77e10</span> single pass: one loop fills all four counters
+<span class="good">e9d0f44</span> Counter for per-user counts
+<span class="good">7c22b1e</span> set for session dedupe
+<span class="good">a41f09c</span> baseline
+<span class="dim">(initial)</span></pre>
+  </div>
+  <p class="small" style="margin-top: 0.8em;">Four commits — <strong>only the ideas that worked.</strong> The discard and the crash happened, are logged in results.tsv, and left zero residue in the history. In the morning you review a branch where every diff earned its place.</p>
+  <p class="small muted">That's the whole trick: <em>git turns a stochastic search into an append-only record of verified progress.</em></p>
+  <aside class="notes">Morning-after workflow on the real repo: read the kept diffs, read results.tsv for the death toll, cherry-pick or merge. Reviewable diffs was design choice #1 — this slide is why.</aside>
+</section>
+
+<!-- 15 · Takeaways -->
+<section>
+  <div class="kicker">Wrap Up · Series Close</div>
+  <h2>Takeaways</h2>
+  <ul class="takeaways">
+    <li><strong>The loop is a shape, not a repo.</strong> One file to edit, one command, one number, git to keep or discard — anything in your world with a number can run it.</li>
+    <li><strong>Autonomy is engineered, not granted.</strong> Fixed budgets, untouchable ground truth, correctness in the metric, NEVER STOP — every clause exists because agents drift without it.</li>
+    <li><strong>The human's job moved up a level.</strong> You don't write the experiments — you write the <em>program</em> that writes them. Skills (part 2), pipelines (part 3), research orgs (part 4): the same move, three altitudes.</li>
+  </ul>
+  <div class="diagram" style="margin-top: 0.9em;">
+    <span class="dbox">find your unknowns</span><span class="arrow">→</span>
+    <span class="dbox">write great skills</span><span class="arrow">→</span>
+    <span class="dbox">spec → tickets</span><span class="arrow">→</span>
+    <span class="dbox prim">the loop runs while you sleep</span>
+  </div>
+  <p class="credit">Repo: github.com/karpathy/autoresearch &nbsp;·&nbsp; Series: chris-at-tyler.github.io/presentations</p>
+  <aside class="notes">Closing challenge: pick one number in your codebase this week — a query time, a bundle size, a p95 — give an agent one file, one command, and this program.md shape for one hour. See what the ledger says. Q&A.</aside>
+</section>
+
+</div>
+</div>
+<script>
