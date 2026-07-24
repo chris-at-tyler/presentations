@@ -1,0 +1,340 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Lunch &amp; Learn · Working with AI Agents · Part 3</div>
+    <h1>From Conversation to Tickets</h1>
+    <p class="subtitle">Your understanding is sharp. Your skills are well-written.<br>Now — the assembly line that turns alignment into agent-ready work.</p>
+    <p class="credit">
+      Based on <strong>to-spec</strong> and <strong>to-tickets</strong> from Matt Pocock's <code>mattpocock/skills</code><br>
+      Part 1: finding your unknowns · Part 2: writing great skills · Part 3: shipping the pipeline
+    </p>
+  </div>
+  <aside class="notes">Promise: by the end, the room has a repeatable path from "we agree on the feature" to "a queue of tickets an agent can grab." Demo brings back the waitlist from part 1 — full-circle. ~25 min + demo.</aside>
+</section>
+
+<!-- 2 · Series recap / the gap -->
+<section>
+  <div class="kicker">Previously</div>
+  <h2>Two talks, one gap</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>🗺️ Part 1</h3>
+      <p class="lead">Sharpen the understanding.</p>
+      <p><code>grill-me</code> forced every hidden decision on the waitlist plan into the open. FIFO, 4-hour holds, pay at check-in…</p>
+    </div>
+    <div class="card">
+      <h3>✍️ Part 2</h3>
+      <p class="lead">Engineer the tools.</p>
+      <p>Predictability, two loads, leading words — how to write skills that behave the same way every run.</p>
+    </div>
+    <div class="card">
+      <h3>❓ The gap</h3>
+      <p class="lead">Understanding isn't work.</p>
+      <p>A grilled plan is still a conversation. How does shared understanding become something an agent — or five — can execute?</p>
+    </div>
+  </div>
+  <aside class="notes">The part-1 waitlist decisions have been "sitting in a file" since that talk — tell the room they'll see that exact file again in the demo.</aside>
+</section>
+
+<!-- 3 · The chain -->
+<section>
+  <div class="kicker">The Big Picture</div>
+  <h2>The build chain</h2>
+  <div class="diagram" style="margin-top: 1em;">
+    <span class="dbox">grill-with-docs<span class="sub">align — part 1</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox prim">to-spec<span class="sub">write it down</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox prim">to-tickets<span class="sub">slice into work</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">implement<span class="sub">build each ticket</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">code-review<span class="sub">check it</span></span>
+  </div>
+  <p class="small muted" style="margin-top: 1em;">Each step is its own skill, run in its own fresh context — part 2's sequence-splitting, applied to a whole workflow. Today: <strong>the middle two</strong>.</p>
+  <aside class="notes">Note the design coherence with part 2: this chain IS granularity-by-sequence — each stage's post-completion steps hidden from the one before it. The pipeline practices the theory.</aside>
+</section>
+
+<!-- 4 · to-spec: synthesis not interview -->
+<section>
+  <div class="kicker">to-spec · 1/3</div>
+  <h2>Synthesis, not interview</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--amber)">Part 1: grilling</h3>
+      <p class="lead">Claude <em>asks</em>.</p>
+      <p>One question at a time until every branch of the decision tree is visited. The output is shared understanding.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Part 3: to-spec</h3>
+      <p class="lead">Claude <em>writes</em>.</p>
+      <p>"Do NOT interview the user — just synthesize what you already know." By the time you reach for it, alignment is done.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.8em;">Same conversation, two skills, opposite directions — and a hard rule keeping them apart. If to-spec starts asking questions, you grilled too little.</p>
+  <aside class="notes">This division of labor is deliberate skill design (part 2 callback: one job per skill, sequence split). "It's working if it starts writing instead of asking."</aside>
+</section>
+
+<!-- 5 · Spec anatomy -->
+<section>
+  <div class="kicker">to-spec · 2/3</div>
+  <h2>What a spec carries</h2>
+  <div class="file">
+    <div class="fname">spec.md — the template, annotated</div>
+    <pre>## Problem Statement      <span class="dim">← from the user's perspective</span>
+## Solution               <span class="dim">← the shape, before any detail</span>
+## User Stories           <span class="good">← "a LONG, numbered list… extremely
+                            extensive" — each independently checkable</span>
+## Implementation Decisions  <span class="good">← what the grilling settled,
+                            so it is never relitigated</span>
+## Testing Decisions      <span class="dim">← the seams, and what "done" means</span>
+## Out of Scope           <span class="dim">← the fence around the work</span></pre>
+  </div>
+  <p class="small muted"><strong>No file paths, no code snippets</strong> — they go stale fast. One exception: a prototype snippet that encodes a decision more precisely than prose (a schema, a state machine) gets inlined, trimmed to the decision-rich parts.</p>
+  <aside class="notes">The user-story list is the load-bearing section — to-tickets slices against it next. "Extremely extensive" is a completion-criterion demand driving legwork (part 2 vocabulary, working).</aside>
+</section>
+
+<!-- 6 · Seams -->
+<section>
+  <div class="kicker">to-spec · 3/3</div>
+  <h2>Seams: where the tests will bite</h2>
+  <p>Before writing anything, to-spec sketches the <strong>seams</strong> the feature will be tested at — and checks them with you.</p>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Prefer existing seams to new ones</strong><span class="why">every new seam is surface area to maintain</span></li>
+    <li><span class="n">2</span><strong>Use the highest seam possible</strong><span class="why">test external behaviour, not implementation details</span></li>
+    <li><span class="n">3</span><strong>The ideal number is one</strong><span class="why">a lot of functionality behind a small, stable interface — a deep module</span></li>
+  </ul>
+  <p class="small muted" style="margin-top: 0.8em;">Why this matters for agentic development: a durable interface gives tests something stable to target — <strong>the code underneath can be rewritten by an agent without the tests moving.</strong></p>
+  <aside class="notes">Deep modules = Ousterhout. The agent twist is real: agents churn implementation fast, so tests pinned to internals become the bottleneck. High-seam tests survive the churn.</aside>
+</section>
+
+<!-- 7 · Tracer bullets: vertical vs horizontal -->
+<section>
+  <div class="kicker amber">to-tickets · 1/5</div>
+  <h2>Tracer bullets: slice vertically</h2>
+  <div class="cols">
+    <div>
+      <p class="small" style="color: var(--coral); font-weight: 700;">❌ Horizontal: one layer at a time</p>
+      <div class="slicegrid">
+        <div class="lbl"></div><div class="hdr">T1</div><div class="hdr">T2</div><div class="hdr">T3</div>
+        <div class="lbl">Schema</div><div class="cell onbad">all</div><div class="cell"></div><div class="cell"></div>
+        <div class="lbl">API</div><div class="cell"></div><div class="cell onbad">all</div><div class="cell"></div>
+        <div class="lbl">UI</div><div class="cell"></div><div class="cell"></div><div class="cell onbad">all</div>
+        <div class="lbl">Tests</div><div class="cell"></div><div class="cell"></div><div class="cell onbad">all</div>
+      </div>
+      <p class="small muted">Nothing works until <em>everything</em> lands. Nothing is demoable. Integration risk piles up at the end.</p>
+    </div>
+    <div>
+      <p class="small" style="color: var(--teal); font-weight: 700;">✅ Vertical: one narrow path through every layer</p>
+      <div class="slicegrid">
+        <div class="lbl"></div><div class="hdr">T1</div><div class="hdr">T2</div><div class="hdr">T3</div>
+        <div class="lbl">Schema</div><div class="cell on">join</div><div class="cell">notify</div><div class="cell">claim</div>
+        <div class="lbl">API</div><div class="cell on">join</div><div class="cell">notify</div><div class="cell">claim</div>
+        <div class="lbl">UI</div><div class="cell on">join</div><div class="cell">notify</div><div class="cell">claim</div>
+        <div class="lbl">Tests</div><div class="cell on">join</div><div class="cell">notify</div><div class="cell">claim</div>
+      </div>
+      <p class="small muted">Each ticket is <strong>demoable the moment it's done</strong> — a tracer bullet through the whole stack.</p>
+    </div>
+  </div>
+  <aside class="notes">The room has fought this fight in sprint planning. Leading word alert (part 2 callback): "tracer bullet" is doing exactly what leading words do — one pretrained token anchoring a whole discipline.</aside>
+</section>
+
+<!-- 8 · What makes a slice right -->
+<section>
+  <div class="kicker amber">to-tickets · 2/5</div>
+  <h2>What makes a slice right-sized</h2>
+  <ul class="takeaways">
+    <li><strong>Complete</strong> — a narrow but full path through every layer. Vertical, never horizontal.</li>
+    <li><strong>Demoable on its own</strong> — a finished slice is verifiable end-to-end, which is what makes it safe to hand to an agent.</li>
+    <li><strong>Sized to one fresh context window</strong> — the 2026 constraint: a ticket an agent can hold in its head, start to finish, without summarization losses.
+      <span class="sub">Work one ticket per fresh context; clear between tickets.</span></li>
+    <li><strong>Prefactoring ordered first</strong> — "make the change easy, then make the easy change." If the code fights the feature, the first tickets reshape the code.</li>
+  </ul>
+  <aside class="notes">"Fits in a context window" as a sizing unit is genuinely new engineering vocabulary — flag it. Prefactoring is Kent Beck; it becomes ticket 00 when needed.</aside>
+</section>
+
+<!-- 9 · Blocking edges & the frontier -->
+<section>
+  <div class="kicker amber">to-tickets · 3/5</div>
+  <h2>Blocking edges &amp; the frontier</h2>
+  <div class="diagram" style="margin-top: 0.6em;">
+    <div>
+      <span class="dbox prim">01 join waitlist<span class="sub">blocked by: none — frontier</span></span>
+      <span class="dbox prim">02 nightly expiry<span class="sub">blocked by: none — frontier</span></span>
+    </div>
+    <div class="arrow">↓</div>
+    <div><span class="dbox">03 cancellation → notify<span class="sub">blocked by: 01</span></span></div>
+    <div class="arrow">↓</div>
+    <div>
+      <span class="dbox">04 claim from email<span class="sub">blocked by: 03</span></span>
+      <span class="dbox">05 hold expiry → next<span class="sub">blocked by: 03</span></span>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 0.8em;">Every ticket declares what gates it. The <strong>frontier</strong> = every ticket whose blockers are done. <strong>That's the parallelism story: several agents, each grabbing a frontier ticket, no coordination meeting required.</strong></p>
+  <aside class="notes">The DAG is the artifact. On a real tracker the edges are native blocking links; agents (or teammates) pull from the frontier. 01 and 02 can start simultaneously today; 04 and 05 run in parallel once 03 lands.</aside>
+</section>
+
+<!-- 10 · Wide refactors -->
+<section>
+  <div class="kicker amber">to-tickets · 4/5</div>
+  <h2>The exception: wide refactors</h2>
+  <p class="small">One shape breaks the tracer-bullet rule: a mechanical change whose <strong>blast radius</strong> fans across the codebase — rename a column, retype a shared symbol. No vertical slice can land green. Sequence it as <strong>expand–contract</strong>:</p>
+  <div class="diagram" style="margin-top: 0.5em;">
+    <span class="dbox">1 · Expand<span class="sub">add the new form beside the old — nothing breaks</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">2 · Migrate<span class="sub">move call sites in batches sized by blast radius — CI stays green</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">3 · Contract<span class="sub">delete the old form once no caller remains</span></span>
+  </div>
+  <p class="small muted" style="margin-top: 0.8em;">Each migrate batch is its own ticket blocked by the expand; the contract is blocked by every batch. If even batches can't stay green alone, they share an integration branch and green is promised only at a final integrate-and-verify ticket.</p>
+  <aside class="notes">Classic database-migration wisdom generalized to code. The skill encodes when to break its own primary rule — that's mature skill design (a branch, in part-2 vocabulary).</aside>
+</section>
+
+<!-- 11 · The quiz gate -->
+<section>
+  <div class="kicker amber">to-tickets · 5/5</div>
+  <h2>The quiz gate: you approve before anything publishes</h2>
+  <div class="prompt">
+    <span class="plabel">to-tickets, before publishing</span>
+    Here's the proposed breakdown (numbered, with blocking edges)…<br><br>
+    · Does the granularity feel right — too coarse, too fine?<br>
+    · Are the blocking edges correct — does each ticket only depend on what genuinely gates it?<br>
+    · Should any tickets be merged or split?
+  </div>
+  <p class="small" style="margin-top: 0.8em;">Iterate until you approve; only then does anything hit the tracker — blockers first, so every edge references a real ticket, each labeled <code>ready-for-agent</code>.</p>
+  <p class="small muted">Part 1's rule, resurfacing: <em>facts are the agent's job; decisions are yours.</em> Slicing granularity is a decision.</p>
+  <aside class="notes">Also note what it does NOT do: never closes or modifies the parent issue. Local-files mode writes .scratch/&lt;feature&gt;/issues/NN-slug.md instead — same artifact, different medium; the demo uses that mode.</aside>
+</section>
+
+<!-- 12 · Live demo intro -->
+<section>
+  <div class="kicker amber">Live Demo</div>
+  <h2>The waitlist returns</h2>
+  <div class="cols">
+    <div style="flex: 1.15;">
+      <div class="file">
+        <div class="fname">demo/DECISIONS.md — part 1's grilled understanding (excerpt)</div>
+        <pre><span class="good">Ordering:</span> strict FIFO, one notified at a time
+<span class="good">Hold window:</span> 4 hours flat, then next in line
+<span class="good">Date matching:</span> exact range only (overlap → backlog)
+<span class="good">Payment:</span> none at claim — campers pay at
+  check-in (the rule that lived in my head)
+<span class="good">Access:</span> account required · max 3 entries
+<span class="good">Season close:</span> nightly expiry job</pre>
+      </div>
+    </div>
+    <div>
+      <div class="prompt">
+        <span class="plabel">Stage 1</span>
+        Read DECISIONS.md … then /to-spec → write spec.md
+      </div>
+      <div class="prompt">
+        <span class="plabel">Stage 2</span>
+        /to-tickets spec.md — local files mode
+      </div>
+      <p class="small muted">Watch for: <strong>no interviewing</strong> · the <strong>seam check</strong> (answer: one — the service API) · the <strong>quiz gate</strong> · files landing <strong>blockers-first</strong>.</p>
+    </div>
+  </div>
+  <aside class="notes">SWITCH TO TERMINAL (runbook in DEMO.md). Full-circle moment — same feature the room grilled in part 1. Mention: no tracker in the sandbox, so both skills write local files; on a real repo these land as linked Jira/GitHub issues.</aside>
+</section>
+
+<!-- 13 · Fallback: the spec -->
+<section>
+  <div class="kicker">What A Run Produces · 1/3</div>
+  <div class="file">
+    <div class="fname">demo/spec.md — excerpt</div>
+    <pre>## Problem Statement
+Campers find fully-booked sites and leave; cancelled
+reservations sit unfilled. Both sides lose.
+
+## User Stories <span class="dim">(1–18 of 23)</span>
+1. As a camper, I want to join a waitlist for a sold-out
+   site and date range, so that I get a chance at a spot.
+2. As a camper, I want to be notified when I'm first in
+   line for a freed spot, so that I can claim it.
+3. As a camper, I want my claim link to expire visibly,
+   so that I know when I've lost my window. <span class="dim">…</span>
+
+## Implementation Decisions
+- Strict FIFO queue per (site, date-range); offers are
+  exclusive: one outstanding offer at a time. <span class="good">← the grilling,
+  carried faithfully — nothing relitigated</span>
+- Claiming converts the freed spot into an unpaid
+  reservation; payment at check-in per park policy.</pre>
+  </div>
+  <aside class="notes">Fallback if live stalls, recap otherwise. Point at the traceability: every implementation decision maps to a DECISIONS.md line — the pipeline never re-opened a settled question.</aside>
+</section>
+
+<!-- 14 · Fallback: the breakdown -->
+<section>
+  <div class="kicker">What A Run Produces · 2/3</div>
+  <h2>The proposed breakdown (the quiz gate)</h2>
+  <ul class="principles">
+    <li><span class="n">01</span><strong>Join a waitlist, end to end</strong> — button on sold-out page → entry stored → visible in account. <span class="why">Blocked by: none — can start immediately</span></li>
+    <li><span class="n">02</span><strong>Nightly season-close expiry</strong> — entries past season close expire. <span class="why">Blocked by: none — can start immediately</span></li>
+    <li><span class="n">03</span><strong>Cancellation → offer to first in line</strong> — freed spot creates an exclusive 4-hour offer + email. <span class="why">Blocked by: 01</span></li>
+    <li><span class="n">04</span><strong>Claim from the email link</strong> — valid claim converts offer to unpaid reservation. <span class="why">Blocked by: 03</span></li>
+    <li><span class="n">05</span><strong>Hold expiry → next in line</strong> — unclaimed offer lapses, next camper notified. <span class="why">Blocked by: 03</span></li>
+    <li><span class="n">06</span><strong>Entry caps</strong> — max 3 active entries per account, enforced at join. <span class="why">Blocked by: 01</span></li>
+  </ul>
+  <p class="small muted">Granularity right? Edges right? Merge or split? — <em>you</em> approve before anything publishes.</p>
+  <aside class="notes">Each is a tracer bullet — 03 is demoable alone: cancel a booking in staging, watch the email arrive. Note 04+05+06 all unlock in parallel once their blockers land: that's the frontier widening.</aside>
+</section>
+
+<!-- 15 · Fallback: one ticket -->
+<section>
+  <div class="kicker">What A Run Produces · 3/3</div>
+  <div class="file">
+    <div class="fname">demo/.scratch/campsite-waitlist/issues/04-claim-from-email.md</div>
+    <pre># 04 — Claim from the email link
+
+<span class="good">**What to build:**</span> a camper who receives an offer email can
+follow its link and claim the freed spot; the claim converts
+the offer into a normal unpaid reservation (payment at
+check-in). An expired link shows a clear "window closed"
+state instead.
+
+<span class="good">**Blocked by:**</span> 03 — Cancellation → offer to first in line
+
+<span class="good">**Status:**</span> ready-for-agent
+
+- [ ] Valid claim within the hold window creates the reservation
+- [ ] The claim is exclusive — a second claim attempt fails safely
+- [ ] Expired link renders the window-closed state
+- [ ] No payment is requested at any point in the flow</pre>
+  </div>
+  <p class="small muted">End-to-end behaviour, not a layer list. Checkable acceptance criteria. A declared edge. <strong>An agent can grab this cold.</strong></p>
+  <aside class="notes">This single file is the talk's whole argument in miniature: part 1's decisions (payment at check-in), part 2's craft (checkable criteria, no vague bounds), part 3's pipeline (the blocking edge, ready-for-agent).</aside>
+</section>
+
+<!-- 16 · Takeaways -->
+<section>
+  <div class="kicker">Wrap Up</div>
+  <h2>Takeaways</h2>
+  <ul class="takeaways">
+    <li><strong>Alignment and synthesis are different jobs.</strong> Grill to align; to-spec writes it down without re-asking. If the spec step interviews you, you grilled too little.</li>
+    <li><strong>Slice vertically, size by context window.</strong> Every ticket a tracer bullet — demoable alone, small enough for one fresh agent context.</li>
+    <li><strong>The edges are the parallelism.</strong> Tickets that declare their blockers form a frontier — that's how several agents work one feature without stepping on each other.
+      <span class="sub">npx skills@latest add mattpocock/skills → /to-spec · /to-tickets</span></li>
+  </ul>
+  <div class="diagram" style="margin-top: 0.9em;">
+    <span class="dbox">grill</span><span class="arrow">→</span>
+    <span class="dbox">to-spec</span><span class="arrow">→</span>
+    <span class="dbox">to-tickets</span><span class="arrow">→</span>
+    <span class="dbox exp">implement<span class="sub">part 4?</span></span><span class="arrow">→</span>
+    <span class="dbox exp">code-review<span class="sub">part 4?</span></span>
+  </div>
+  <p class="credit">Parts 1–2: chris-at-tyler.github.io/presentations &nbsp;·&nbsp; Skills: github.com/mattpocock/skills</p>
+  <aside class="notes">Tease part 4: implement drives tdd internally, then code-review — the right half of the chain. Gauge the room's appetite. Q&A.</aside>
+</section>
+
+</div>
+</div>
+<script>

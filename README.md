@@ -13,6 +13,7 @@ from `main`; this repo is public — keep talk content public-safe).
 | ------- | ---------------------------------------------------------- | --------------------------- | --------- | --------------------------- |
 | 2026-07 | [Finding Your Unknowns](2026-07-finding-your-unknowns/)    | Tyler Tech lunch-and-learn  | ✅ `/grill-me` | Runbook in `DEMO.md`   |
 | 2026-07 | [Writing Great Skills](2026-07-writing-great-skills/)      | Tyler Tech lunch-and-learn (part 2) | ✅ skill makeover | Runbook in `DEMO.md` |
+| 2026-07 | [From Conversation to Tickets](2026-07-conversation-to-tickets/) | Tyler Tech lunch-and-learn (part 3) | ✅ spec → tickets | Runbook in `DEMO.md` |
 
 ## Conventions
 
