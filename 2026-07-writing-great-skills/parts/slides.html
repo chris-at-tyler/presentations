@@ -1,0 +1,407 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Lunch &amp; Learn · Working with AI Agents · Part 2</div>
+    <h1>Writing Great Skills</h1>
+    <p class="subtitle">One markdown file can steer an AI agent the same way every time —<br>if you write it like an engineer. The vocabulary, plus a live skill makeover.</p>
+    <p class="credit">
+      Based on <strong>writing-great-skills</strong> from Matt Pocock's <code>mattpocock/skills</code><br>
+      Part 1 — "Finding Your Unknowns" — introduced skills; today we learn to write them well.
+    </p>
+  </div>
+  <aside class="notes">Promise: by the end, the room can diagnose a bad skill by name and fix it. Same shape as part 1: framework first, live payoff at the end. 25 min + demo.</aside>
+</section>
+
+<!-- 2 · Recap bridge -->
+<section>
+  <div class="kicker">Previously</div>
+  <h2>Part 1 in one slide</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>🗺️ Finding Your Unknowns</h3>
+      <p class="lead">The bottleneck moved: output quality is capped by <em>your</em> unknowns, not the model.</p>
+      <p>A skill called <code>grill-me</code> interviewed me live and surfaced a rule that existed only in my head.</p>
+    </div>
+    <div class="card">
+      <h3>✍️ Today</h3>
+      <p class="lead">From <em>using</em> skills to <em>writing</em> them.</p>
+      <p>The whole grill-me skill was one line. That wasn't laziness — it was a design decision. Today: the engineering behind decisions like that.</p>
+    </div>
+  </div>
+  <aside class="notes">Quick poll: who was here for part 1? If many weren't: a skill is a markdown file in .claude/skills that shapes how Claude behaves — next slide is the refresher.</aside>
+</section>
+
+<!-- 3 · What's a skill (refresher) -->
+<section>
+  <div class="kicker">Refresher</div>
+  <h2>A skill is just markdown</h2>
+  <div class="file">
+    <div class="fname">.claude/skills/grill-me/SKILL.md — the entire file, from part 1</div>
+    <pre><span class="fm">---
+name: grill-me
+description: A relentless interview to sharpen a plan or design.
+disable-model-invocation: true
+---</span>
+
+Run a `/grilling` session.</pre>
+  </div>
+  <p class="small muted">Frontmatter + instructions. Dropped in a folder, it changes how the agent behaves.
+  The question of this talk: what separates a skill that works <em>every time</em> from one that works <em>sometimes</em>?</p>
+  <aside class="notes">Keep this to 45 seconds — it's orientation for anyone who missed part 1, and the one-line body sets up the meta slide later.</aside>
+</section>
+
+<!-- 4 · Thesis -->
+<section>
+  <div class="kicker amber">The Thesis</div>
+  <div class="center-v">
+    <div class="bigquote">
+      "A skill exists to wrangle <em>determinism</em> out of a <em>stochastic</em> system."
+      <span class="attr">— writing-great-skills</span>
+    </div>
+    <p><strong>Predictability</strong> is the root virtue: the agent takes the same <em>process</em> every run — not the same output.</p>
+    <p class="small muted">A brainstorming skill should <em>predictably diverge</em>: its tokens vary, its behaviour doesn't. Cost and maintainability are symptoms of predictability, not rivals to it.</p>
+  </div>
+  <aside class="notes">This reframes everything: you're not writing documentation, you're engineering behaviour. Every lever in the next 20 minutes is judged against one question — does it make the process more repeatable?</aside>
+</section>
+
+<!-- 5 · Two loads -->
+<section>
+  <div class="kicker">The Central Trade</div>
+  <h2>Every skill spends one of two loads</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--violet)">Model-invoked</h3>
+      <p class="lead">Keeps a <code>description</code> → the agent can fire it on its own.</p>
+      <p>The description sits in the context window <em>every turn</em> — that's <strong>context load</strong>. Other skills can reach it too. You can still type its name.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">User-invoked</h3>
+      <p class="lead"><code>disable-model-invocation: true</code> → only you can fire it.</p>
+      <p>Zero context load — but now <em>you</em> are the index that must remember it exists. That's <strong>cognitive load</strong>, the price of human agency.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 0.8em;">Split, inline, disclose, invoke — <strong>most authoring decisions are this same trade made in different places.</strong></p>
+  <aside class="notes">Part 1 callback: grill-me had disable-model-invocation: true and never appeared in the model's own skill list. Now they know why — it costs nothing in the window; the presenter pays with one memory slot instead. Cognitive load isn't bad — spend it where human judgement matters.</aside>
+</section>
+
+<!-- 6 · Router skills -->
+<section>
+  <div class="kicker">The Central Trade</div>
+  <h2>When cognitive load piles up: a router</h2>
+  <div class="diagram">
+    <div><span class="dbox prim">ask-matt<span class="sub">user-invoked router — names every skill and when to reach for it</span></span></div>
+    <div class="arrow">↓ &nbsp; points the human at &nbsp; ↓</div>
+    <div>
+      <span class="dbox">grill-me</span>
+      <span class="dbox">to-spec</span>
+      <span class="dbox">triage</span>
+      <span class="dbox">tdd</span>
+      <span class="dbox">wayfinder</span>
+      <span class="dbox">…</span>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.8em;">User-invoked skills have no description, so nothing can <em>fire</em> them but you — a router can only <em>hint</em>. One skill to remember instead of twelve: cognitive load collapsed back to a single slot.</p>
+  <aside class="notes">This is real: Matt Pocock's repo ships ask-matt as exactly this router. The elegance — the cure for too many user-invoked skills is one more user-invoked skill.</aside>
+</section>
+
+<!-- 7 · Descriptions -->
+<section>
+  <div class="kicker">The Toolkit · 1/5</div>
+  <h2>Writing the description</h2>
+  <p class="small">The description is the skill's trigger <em>and</em> its permanent rent — every word is context load on every turn. So it earns the hardest pruning:</p>
+  <div class="cols">
+    <div>
+      <div class="file">
+        <div class="fname">❌ six triggers, one branch</div>
+        <pre><span class="bad">Use when the user wants to write a
+commit message, needs to commit
+changes, asks for help committing,
+wants to make a commit, mentions
+git commits, or is committing code.</span></pre>
+      </div>
+    </div>
+    <div>
+      <div class="file">
+        <div class="fname">✅ one trigger per branch</div>
+        <pre><span class="good">Write commit messages — use when
+committing changes.</span></pre>
+      </div>
+    </div>
+  </div>
+  <ul class="principles" style="margin-top: 0.5em;">
+    <li><span class="n">1</span><strong>Front-load the leading word</strong><span class="why">the description is where it does its invocation work</span></li>
+    <li><span class="n">2</span><strong>One trigger per branch</strong><span class="why">synonyms renaming the same branch are duplication</span></li>
+    <li><span class="n">3</span><strong>Cut identity that's in the body</strong><span class="why">triggers only, plus any "when another skill needs…" clause</span></li>
+  </ul>
+  <aside class="notes">The left example is from our demo patient — they'll see it again. Six phrasings of "user is committing" is one branch written six times.</aside>
+</section>
+
+<!-- 8 · Information hierarchy -->
+<section>
+  <div class="kicker">The Toolkit · 2/5</div>
+  <h2>The information hierarchy</h2>
+  <p class="small">A skill's content, ranked by how immediately the agent needs it:</p>
+  <ul class="takeaways">
+    <li><strong>In-skill steps</strong> — the ordered actions, the primary tier. What the agent does.
+      <span class="sub">Each ends on a completion criterion.</span></li>
+    <li><strong>In-skill reference</strong> — rules and facts consulted on demand.
+      <span class="sub">Sometimes the whole skill — a flat set of review rules is fine, not a smell.</span></li>
+    <li><strong>Disclosed reference</strong> — pushed to a linked file behind a <em>context pointer</em>, loaded only when needed.
+      <span class="sub">writing-great-skills does exactly this: SKILL.md keeps the levers, GLOSSARY.md holds the full definitions.</span></li>
+  </ul>
+  <p class="small muted"><strong>Progressive disclosure</strong> is the move down the ladder. Push too little and the top bloats; push too much and you hide what every run needs. That tension is the whole decision — and it's not about tokens, it's about keeping the top legible.</p>
+  <aside class="notes">Branching is the disclosure test: inline what every path needs, disclose what only some paths reach. And co-location: once material lands on a rung, keep a concept's definition, rules, caveats under ONE heading — scattered fragments don't get read together.</aside>
+</section>
+
+<!-- 9 · Completion criteria -->
+<section>
+  <div class="kicker">The Toolkit · 3/5</div>
+  <h2>Completion criteria</h2>
+  <p class="small">The condition that tells the agent a unit of work is <em>done</em>. Two properties make it a lever:</p>
+  <div class="cols">
+    <div>
+      <div class="file">
+        <div class="fname">❌ vague — invites quitting early</div>
+        <pre><span class="bad">Review the message until it
+looks good.</span></pre>
+      </div>
+      <p class="small muted"><strong>Clarity:</strong> can the agent tell done from not-done? A fuzzy bound gives way to the pull of the next step — <em>premature completion</em>.</p>
+    </div>
+    <div>
+      <div class="file">
+        <div class="fname">✅ checkable + exhaustive</div>
+        <pre><span class="good">Done when every functional change
+in the diff is named in the message
+— no hunk unaccounted for.</span></pre>
+      </div>
+      <p class="small muted"><strong>Demand:</strong> how much it requires sets the <em>legwork</em> — the digging the agent does within the step.</p>
+    </div>
+  </div>
+  <aside class="notes">"Every modified model accounted for" forces thorough work where "produce a change list" doesn't. Defence order for premature completion: sharpen the bound FIRST (cheap, local); only hide later steps if the criterion is irreducibly fuzzy and you actually observe the rush.</aside>
+</section>
+
+<!-- 10 · Leading words -->
+<section>
+  <div class="kicker amber">The Toolkit · 4/5</div>
+  <h2>Leading words</h2>
+  <p>A compact concept <strong>already in the model's pretraining</strong> that the agent thinks with while running the skill — a behavioural principle in one token, recruiting priors you don't have to pay for.</p>
+  <div class="cards">
+    <div class="card">
+      <p class="lead">"fast, deterministic, low-overhead" → <strong>tight</strong></p>
+      <p>One quality restated three ways collapses into a single pretrained word: a <em>tight</em> loop.</p>
+    </div>
+    <div class="card">
+      <p class="lead">"a loop you believe in" → <strong>red</strong></p>
+      <p>A fuzzy gate becomes a binary observable: the test goes <em>red</em> on the bug, or it doesn't.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 0.7em;">Remember grill-me's description? <em>"A <strong>relentless</strong> interview…"</em> — that word is doing engineering. "Be thorough" changes nothing (the agent is already thorough-ish); <em>relentless</em> beats the default.</p>
+  <p class="small muted">You win twice: fewer tokens, <em>and</em> a sharper hook for the agent's thinking. Assume every skill carries restatements a leading word can retire.</p>
+  <aside class="notes">Deepest idea in the talk. Coined words work but recruit no priors — you pay in definition tokens what a pretrained word gives free. In the description it anchors invocation; in the body, execution. Same word in your prompts/docs/code = the agent links the language to the skill.</aside>
+</section>
+
+<!-- 11 · Pruning -->
+<section>
+  <div class="kicker">The Toolkit · 5/5</div>
+  <h2>Pruning: the no-op test</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Single source of truth</strong><span class="why">each meaning in exactly one place — changing behaviour is a one-place edit</span></li>
+    <li><span class="n">2</span><strong>Relevance</strong><span class="why">does this line still bear on what the skill does, or has the world moved on?</span></li>
+    <li><span class="n">3</span><strong>The no-op test, sentence by sentence</strong><span class="why">does it change behaviour versus the model's default? If not — delete the sentence, don't trim it</span></li>
+  </ul>
+  <div class="prompt" style="margin-top: 0.7em;">
+    <span class="plabel">No-op specimens</span>
+    "Always be helpful, clear, and accurate."&nbsp;&nbsp;·&nbsp;&nbsp;"Use good judgment."&nbsp;&nbsp;·&nbsp;&nbsp;"Write high-quality code."
+  </div>
+  <p class="small muted">The model already does all of that by default — you're paying load to say nothing. Be aggressive: most prose that fails the test should go, not be rewritten. Verdicts are settled by <em>running the skill</em>, not by debate.</p>
+  <aside class="notes">This is the discipline slide. Adding feels safe, removing feels risky — that asymmetry is exactly how skills rot. Note the no-op test is model-relative: two people disagreeing are disagreeing about the default.</aside>
+</section>
+
+<!-- 12 · Failure modes I -->
+<section>
+  <div class="kicker" style="color: var(--coral)">Failure Modes · 1/2</div>
+  <h2>The length diseases</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--coral)">Sediment</h3>
+      <p class="lead">Stale layers that settle and never clear.</p>
+      <p>Adding feels safe, removing feels risky — the default fate of any skill without a pruning discipline. "TODO: update after the migration (2024)."</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--coral)">Duplication</h3>
+      <p class="lead">One meaning, multiple sources of truth.</p>
+      <p>Costs maintenance and tokens — and inflates the meaning's prominence past its real rank on the ladder.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--coral)">Sprawl</h3>
+      <p class="lead">Simply too long — even if every line is live.</p>
+      <p>Attention thins across the excess. Cure: the ladder — disclose reference, split by branch or sequence.</p>
+    </div>
+  </div>
+  <aside class="notes">Three distinct diagnoses that all present as "this skill is long": stale length (sediment), repeated length (duplication), and length itself (sprawl). Different cures — that's why the vocabulary matters.</aside>
+</section>
+
+<!-- 13 · Failure modes II -->
+<section>
+  <div class="kicker" style="color: var(--coral)">Failure Modes · 2/2</div>
+  <h2>The behaviour diseases</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--coral)">Premature completion</h3>
+      <p class="lead">Declaring done before the work is.</p>
+      <p>Attention slips to <em>being done</em>. Visible later steps pull forward; a vague criterion gives way. Sharpen the bound first.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--coral)">No-op</h3>
+      <p class="lead">A line the model obeys by default.</p>
+      <p>Perfectly relevant, changes nothing. "Be thorough" → already thorough-ish; pay for <em>relentless</em> or pay for nothing.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--coral)">Negation 🐘</h3>
+      <p class="lead">"Don't think of an elephant."</p>
+      <p>A prohibition <em>names the behaviour into the frame</em> — "never write verbose comments" makes verbosity the freshest pattern in context. Prompt the positive: "write one-line comments."</p>
+    </div>
+  </div>
+  <aside class="notes">Negation is the crowd-pleaser — everyone has written "don't do X" into a prompt and watched X happen. The forbidden concept activates strongly; the "not" is a weak modifier. A prohibition earns its place only as a hard guardrail you can't phrase positively, and even then pair it with the positive target.</aside>
+</section>
+
+<!-- 14 · Meta -->
+<section>
+  <div class="kicker amber">The Receipt</div>
+  <h2>This skill practices what it preaches</h2>
+  <div class="file">
+    <div class="fname">skills/productivity/writing-great-skills/SKILL.md — frontmatter</div>
+    <pre><span class="fm">---
+name: writing-great-skills
+description: Reference for writing and editing skills well — the vocabulary
+  and principles that make a skill predictable.
+<span class="hl">disable-model-invocation: true</span>
+---</span></pre>
+  </div>
+  <ul class="principles" style="margin-top: 0.5em;">
+    <li><span class="n">✓</span><strong>User-invoked</strong><span class="why">you reach for it while authoring — the agent never needs to fire it alone. Zero context load.</span></li>
+    <li><span class="n">✓</span><strong>All reference, no steps</strong><span class="why">a legitimately flat peer-set of levers — rung two of its own ladder</span></li>
+    <li><span class="n">✓</span><strong>Progressive disclosure</strong><span class="why">SKILL.md keeps the levers; full definitions disclosed to GLOSSARY.md behind a pointer</span></li>
+  </ul>
+  <aside class="notes">Design coherence as credibility: the reference about skill design is itself a well-designed skill. Fun detail — its glossary even lists banned synonyms for each term ("Avoid: bloat, cruft, rot") to keep the vocabulary tight. Leading words, applied to itself.</aside>
+</section>
+
+<!-- 15 · Live demo intro -->
+<section>
+  <div class="kicker amber">Live Demo</div>
+  <h2>The skill makeover</h2>
+  <div class="cols">
+    <div style="flex: 1.25;">
+      <div class="file">
+        <div class="fname">demo/flawed-skill/SKILL.md — earnest, and sick (abridged)</div>
+        <pre><span class="dim">description:</span> Helps write commit messages. Use when the
+user wants to write a commit message, needs to commit
+changes, asks for help committing, wants to make a…
+
+Git is a distributed version control system where
+every commit is a node in a directed acyclic graph…
+
+Always be helpful, clear, and accurate.
+
+- Don't write vague commit messages.
+- Never use the passive voice.
+- TODO: update after the GitLab migration (2024)
+
+3. Review the message until it looks good.</pre>
+      </div>
+    </div>
+    <div>
+      <div class="prompt">
+        <span class="plabel">In Claude Code</span>
+        /writing-great-skills<br><br>
+        Review flawed-skill/SKILL.md against this reference. Diagnose every failure mode by name, quoting the offending lines. Write the refactor to SKILL.refactored.md.
+      </div>
+      <p class="small muted">Watch for: the room can now <strong>name every disease</strong> before Claude does.</p>
+    </div>
+  </div>
+  <aside class="notes">SWITCH TO TERMINAL (pre-flight in DEMO.md). Invite the room to shout diagnoses first — they just learned the vocabulary; let them beat Claude to it. Then run it and let the reference do the work.</aside>
+</section>
+
+<!-- 16 · Fallback: diagnosis -->
+<section>
+  <div class="kicker">The Diagnosis (What A Run Finds)</div>
+  <div class="cols">
+    <div style="flex: 1.3;">
+      <div class="file">
+        <div class="fname">demo/flawed-skill/SKILL.md — annotated</div>
+        <pre><span class="bad">① Use when the user wants… needs… asks…
+   wants… mentions… or is committing code.</span>
+<span class="bad">② Git is a distributed version control
+   system where every commit is a node…</span>
+<span class="bad">③ Always be helpful, clear, and accurate.</span>
+<span class="bad">④ Don't write vague… Never use… Avoid…</span>
+<span class="bad">⑤ under 50 chars / kept short / fifty
+   characters maximum is the rule</span>
+<span class="bad">⑥ Jenkins pipeline… (moved off last year)
+   TODO: … GitLab migration (2024)</span>
+<span class="bad">⑦ Review the message until it looks good.</span></pre>
+      </div>
+    </div>
+    <div>
+      <ul class="principles">
+        <li><span class="n">①</span><strong>Duplication</strong> — six triggers, one branch</li>
+        <li><span class="n">②</span><strong>Sprawl</strong> — exposition, bears on nothing</li>
+        <li><span class="n">③</span><strong>No-op</strong> — the default, restated</li>
+        <li><span class="n">④</span><strong>Negation ×3</strong> — elephants named</li>
+        <li><span class="n">⑤</span><strong>Duplication</strong> — one rule, three homes</li>
+        <li><span class="n">⑥</span><strong>Sediment</strong> — 2024 relics, dead pipeline</li>
+        <li><span class="n">⑦</span><strong>Vague criterion</strong> — premature completion invited</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">Fallback if the live demo stalls; otherwise show as recap. Every chip is a term the room learned 10 minutes ago — this is the vocabulary paying off.</aside>
+</section>
+
+<!-- 17 · Fallback: the after -->
+<section>
+  <div class="kicker">The After</div>
+  <h2>34 lines → 9. Same behaviour, every run.</h2>
+  <div class="file">
+    <div class="fname">demo/flawed-skill/SKILL.refactored.md</div>
+    <pre><span class="fm">---
+name: commit-helper
+description: <span class="good">Write commit messages — use when committing changes.</span>
+---</span>
+
+1. Run `git diff --staged` and read every hunk.
+2. Write the message: <span class="good">imperative subject ≤ 50 characters</span>; body
+   explains <span class="good">why</span>, wrapped at 72.
+3. <span class="good">Done when every functional change in the diff is named in
+   the message — no hunk unaccounted for.</span></pre>
+  </div>
+  <p class="small muted">One trigger. One source of truth for the 50-char rule. Negations flipped positive. A checkable, exhaustive completion criterion. Nothing the model does by default.</p>
+  <aside class="notes">The wrap line: same agent, same model — only the writing changed. That's predictability as an engineering property. Steps are now the top of the ladder; there's nothing left to disclose because there's nothing left.</aside>
+</section>
+
+<!-- 18 · Takeaways -->
+<section>
+  <div class="kicker">Wrap Up</div>
+  <h2>Takeaways</h2>
+  <ul class="takeaways">
+    <li><strong>Predictability is the root virtue.</strong> Same process every run, not same output — judge every line of a skill against that.
+      <span class="sub">"A skill exists to wrangle determinism out of a stochastic system."</span></li>
+    <li><strong>Every decision spends one of two loads.</strong> Context load (the agent's window) or cognitive load (your head) — split, inline, disclose, and invoke accordingly.
+      <span class="sub">Router skills collapse cognitive load back to one slot.</span></li>
+    <li><strong>Edit like an engineer.</strong> One source of truth · the sentence-level no-op test · positive phrasing · leading words that beat the default.
+      <span class="sub">npx skills@latest add mattpocock/skills → /writing-great-skills</span></li>
+  </ul>
+  <p style="margin-top: 1em;">And everything here applies beyond skills — <strong>your CLAUDE.md and your prompts are skills too.</strong></p>
+  <p class="credit">Part 1: chris-at-tyler.github.io/presentations/2026-07-finding-your-unknowns &nbsp;·&nbsp; Skill: github.com/mattpocock/skills</p>
+  <aside class="notes">Closing challenge: open your CLAUDE.md this afternoon and run the no-op test on it, sentence by sentence. Count what survives. Q&A.</aside>
+</section>
+
+</div>
+</div>
+<script>
