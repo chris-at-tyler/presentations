@@ -1,0 +1,331 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Kimi AI · GTC 2026 Keynote</div>
+    <h1>How We Scaled Kimi K2.5</h1>
+    <p class="subtitle">Zhilin Yang on three axes of scaling — token efficiency, long context, and
+    agent swarms — and the optimizer, architecture, and RL techniques behind Kimi K2.5.</p>
+    <p class="credit">
+      ~40-min keynote, Kimi AI YouTube, uploaded 2026-03-21 · recap by Chris<br>
+      Source: <code>youtube.com/watch?v=CwePo4847ho</code> · auto-captions, so names/terms are lightly hedged
+    </p>
+  </div>
+  <aside class="notes">Zhilin Yang is a Kimi/Moonshot AI researcher. The whole talk is one argument: there are three independent scaling axes beyond "more tokens" — token efficiency, context length, and agent count — and Kimi K2.5 is what you get when you push all three at once.</aside>
+</section>
+
+<!-- 2 · Open, not just open -->
+<section>
+  <div class="kicker">Open, Not Just Open · <a href="https://youtu.be/CwePo4847ho?t=7">0:07</a></div>
+  <h2>Open models are catching up — that alone isn't the pitch</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Why open matters</h3>
+      <p>Deploy anywhere — local servers or cloud — and inspect every weight, instead of
+      calling a black box.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--amber)">The catch</h3>
+      <p class="lead">Open models are closing the gap with proprietary ones, but
+      "open models cannot be just open — they have to be great." <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=48">0:48</a></span></p>
+    </div>
+  </div>
+  <aside class="notes">He credits the "closing the gap" chart to a Jensen Huang CES talk earlier in the year — a borrowed slide, not their own claim of a specific number.</aside>
+</section>
+
+<!-- 3 · Three scaling axes -->
+<section>
+  <div class="kicker">The Three Axes · <a href="https://youtu.be/CwePo4847ho?t=85">1:25</a></div>
+  <h2>Three scaling dimensions, in agent terms</h2>
+  <div class="diagram">
+    <span class="dbox">Token efficiency<span class="sub">a stronger prior for agent RL search</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">Long context<span class="sub">agents that run for days, weeks, months</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox prim">Agent swarms<span class="sub">parallel sub-agents, not one agent alone</span></span>
+  </div>
+  <p class="small muted" style="margin-top: 0.8em;">Standard scaling laws move you along one curve: more tokens, lower loss. This talk is
+  about the other two knobs — moving that curve, and adding agent count as a third
+  dimension entirely. <a href="https://youtu.be/CwePo4847ho?t=248">4:08</a></p>
+  <aside class="notes">The "translate into agent terms" framing at 4:08 is the connective tissue for the rest of the talk — each of the three technical sections that follows maps directly back to one of these three boxes.</aside>
+</section>
+
+<!-- 4 · Token efficiency raises the ceiling -->
+<section>
+  <div class="kicker">Token Efficiency Is Intelligence, Not Just Cost · <a href="https://youtu.be/CwePo4847ho?t=330">5:30</a></div>
+  <h2>2x token efficiency ≈ "magically" having 2x the data</h2>
+  <div class="bigquote">
+    "Suppose you have 50 trillion high-quality tokens... apply a two-times-efficient
+    optimizer... it's almost like magic that you get equivalently 100 trillion tokens."
+    <span class="attr">— <a href="https://youtu.be/CwePo4847ho?t=330">5:30</a></span>
+  </div>
+  <p class="small muted">His framing: high-quality data is finite — the field is hitting a "data wall" — so
+  squeezing more intelligence out of the same tokens is the lever, not a side benefit.</p>
+  <aside class="notes">This slide is the setup for why the optimizer work (next slide) gets top billing rather than being a footnote about training speed.</aside>
+</section>
+
+<!-- 5 · Muon optimizer -->
+<section>
+  <div class="kicker">The Optimizer · <a href="https://youtu.be/CwePo4847ho?t=372">6:12</a></div>
+  <h2>Muon: a second-order optimizer, 2x token efficiency</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>What it does differently</h3>
+      <p>Every gradient update is transformed so each entry is orthogonal to the
+      others — unlike Adam's per-parameter updates.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Two techniques that made it scale</h3>
+      <p>Weight decay, critical once models get large; and a tuned coefficient that
+      keeps update magnitude (RMS) comparable to Adam's. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=413">6:53</a></span></p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">Claimed first published demonstration that this optimizer family is scalable for LLM
+  training — plus a distributed implementation that partitions optimizer state across
+  the data-parallel group to keep it memory-efficient at cluster scale. <a href="https://youtu.be/CwePo4847ho?t=454">7:34</a></p>
+  <aside class="notes">Referred to in the talk as "Muon" (the transcript's auto-captions render it inconsistently, at one point as "Meow" — same technique).</aside>
+</section>
+
+<!-- 6 · 1T-param instability + QK-clip -->
+<section>
+  <div class="kicker">Scaling To 1 Trillion Parameters · <a href="https://youtu.be/CwePo4847ho?t=494">8:14</a></div>
+  <h2>The 1T-parameter cliff, and the fix</h2>
+  <div class="timeline">
+    <div class="phase pre">
+      <h3>The problem</h3>
+      <ul>
+        <li>Max logits explode past 1,000</li>
+        <li>Normal range is roughly 50–100</li>
+        <li class="star">Training loss diverges</li>
+      </ul>
+    </div>
+    <div class="phase dur">
+      <h3>The fix: QK-clip</h3>
+      <ul>
+        <li>Per attention head, per forward pass</li>
+        <li>Compute a dividing factor</li>
+        <li>Apply it to query &amp; key projections</li>
+      </ul>
+      <span class="small muted"><a href="https://youtu.be/CwePo4847ho?t=536">8:56</a></span>
+    </div>
+    <div class="phase post">
+      <h3>The result</h3>
+      <ul>
+        <li>Loss curve identical to unclipped</li>
+        <li class="star">Clip relaxes naturally over steps</li>
+      </ul>
+      <span class="small muted"><a href="https://youtu.be/CwePo4847ho?t=579">9:39</a></span>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.7em;">Shipped in Kimi K2's training — described as the first trillion-parameter-scale run
+  of this optimizer family. <a href="https://youtu.be/CwePo4847ho?t=621">10:21</a></p>
+  <aside class="notes">Nice detail for the room: the clip doesn't just cap the value and stay there — the network learns to keep itself under the clip threshold, so the constraint becomes unnecessary after enough training steps.</aside>
+</section>
+
+<!-- 7 · Long context: transformers vs LSTMs -->
+<section>
+  <div class="kicker">Long Context · <a href="https://youtu.be/CwePo4847ho?t=664">11:04</a></div>
+  <h2>Long context is really an agent-runtime question</h2>
+  <p>Transformers keep getting <em>better</em> the further into a long context they go;
+  LSTMs saturate and stop improving. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=706">11:46</a></span></p>
+  <div class="bigquote" style="font-size: 1.05em;">
+    Fine for machine translation a decade ago — but "not going to be accomplishable by
+    LSTMs" if the task is understanding an entire codebase, or running an agent
+    trajectory long enough to write a Linux kernel from scratch.
+    <span class="attr">— <a href="https://youtu.be/CwePo4847ho?t=747">12:27</a></span>
+  </div>
+  <aside class="notes">This is the bridge slide into Kimi Linear — the architecture is the answer to "how do we get transformer-like long-context scaling without full attention's cost."</aside>
+</section>
+
+<!-- 8 · Kimi Linear architecture -->
+<section>
+  <div class="kicker">The Architecture: Kimi Linear · <a href="https://youtu.be/CwePo4847ho?t=787">13:07</a></div>
+  <h2>A per-channel memory, not one global decay knob</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>The old limitation</h3>
+      <p>Classic linear attention has a single scalar decay factor — you're stuck
+      choosing between forgetting almost everything or retaining almost everything.
+      <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=828">13:48</a></span></p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Kimi Delta Attention's fix</h3>
+      <p class="lead">Decay becomes a diagonal matrix — one rate per channel. Some
+      channels decay slowly (long-range memory); others decay fast (refresh with new
+      information). <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=871">14:31</a></span></p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">Mixes linear and full-attention layers at a 1:2:3 ratio; the chunk-wise GPU
+  formulation is an <strong>exact</strong> rewrite, not an approximation — nothing is
+  traded away for parallelism. <a href="https://youtu.be/CwePo4847ho?t=992">16:32</a></p>
+  <aside class="notes">The infra challenge he flags: once decay is a matrix instead of a scalar, it can't simply be factored out of the recurrence — the matrix-inversion + cumulative-decay rewrite is what makes it parallelizable on GPUs at all.</aside>
+</section>
+
+<!-- 9 · Kimi Linear results -->
+<section>
+  <div class="kicker">Results · <a href="https://youtu.be/CwePo4847ho?t=1033">17:13</a></div>
+  <h2>First architecture claimed to beat full attention everywhere</h2>
+  <ul class="takeaways">
+    <li><strong>Wins on both ends.</strong> Beats MLA and gated-delta baselines on
+      short-context (MMLU-style) and long-context (RULER) tasks — while being cheaper
+      to run. <span class="sub">17:13</span></li>
+    <li><strong>The gap widens at scale.</strong> Efficiency advantage grows further
+      once context reaches 1M+ tokens. <span class="sub">17:13</span></li>
+    <li><strong>Short input, long input, long output — all three at once.</strong>
+      Per the talk, the first architecture to outperform full attention across all
+      three simultaneously. <span class="sub"><a href="https://youtu.be/CwePo4847ho?t=1075">17:55</a></span></li>
+  </ul>
+  <aside class="notes">Take the "first architecture to..." framing as the speaker's own claim, not an independently verified benchmark result — worth a caveat if repeating this externally.</aside>
+</section>
+
+<!-- 10 · Agent swarms -->
+<section>
+  <div class="kicker">Agent Swarms · <a href="https://youtu.be/CwePo4847ho?t=1118">18:38</a></div>
+  <h2>One orchestrator, many sub-agents — like a company, not a person</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>The org-chart analogy</h3>
+      <p>An orchestrator (his word: "CEO") decomposes work across sub-agents — researchers,
+      developers — then a second wave (fact-checkers, downloaders) assembles the final
+      report. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1161">19:21</a></span></p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Why it's faster</h3>
+      <p class="lead">At matched task complexity, swarms cut execution time versus a
+      single agent — scaling to 100–1,000 sub-agents keeps complex tasks inside an
+      economically viable time budget. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1200">20:00</a></span></p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">Scales on four axes at once: input (parallel reading of many sources), output (e.g. a
+  100-page report), actions, and orchestration itself. <a href="https://youtu.be/CwePo4847ho?t=1242">20:42</a></p>
+  <aside class="notes">The "serial collapse" failure mode (next slide) is what happens when you skip the reward shaping and just let the model default back to doing everything itself.</aside>
+</section>
+
+<!-- 11 · Agent swarm RL rewards -->
+<section>
+  <div class="kicker">Teaching Swarms To Coordinate · <a href="https://youtu.be/CwePo4847ho?t=1284">21:24</a></div>
+  <h2>Three reward terms, not one</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Instantiation reward.</strong>
+      <span class="why">Pushes the model to actually spawn sub-agents instead of defaulting to solo execution ("serial collapse"); its weight decays once the behavior sticks — <a href="https://youtu.be/CwePo4847ho?t=1324">22:04</a></span></li>
+    <li><span class="n">2</span><strong>Finished reward.</strong>
+      <span class="why">Without it, the model games reward #1 by spawning sub-agents that never finish — this rewards a high completion ratio instead — <a href="https://youtu.be/CwePo4847ho?t=1365">22:45</a></span></li>
+    <li><span class="n">3</span><strong>Outcome reward.</strong>
+      <span class="why">The standard "did the whole task succeed" signal, same as single-agent RL — <a href="https://youtu.be/CwePo4847ho?t=1406">23:26</a></span></li>
+  </ul>
+  <aside class="notes">He's explicit that supporting this required new infrastructure too — parallel execution plus multiple concurrent reward functions isn't free to build.</aside>
+</section>
+
+<!-- 12 · Kimi K2.5 assembled + native vision -->
+<section>
+  <div class="kicker">Kimi K2.5 · <a href="https://youtu.be/CwePo4847ho?t=1449">24:09</a></div>
+  <h2>All three axes, one model — plus native vision</h2>
+  <p>Muon-clip optimizer + Kimi Linear architecture + agent swarms → <strong>Kimi
+  K2.5</strong>, released "over a month" before this talk. Demo capability: it can read
+  a video and produce a website that replicates or style-transfers it.
+  <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1531">25:31</a></span></p>
+  <div class="card" style="margin-top: 0.6em;">
+    <h3 style="color: var(--amber)">First open model with native joint vision-text</h3>
+    <p>Vision and text tokens are fused from 0% of training ("early fusion"), instead
+    of pretraining text-only for ~20T tokens and bolting on ~2T tokens of vision
+    afterward. Reported to outperform that "late fusion" approach.
+    <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1651">27:31</a></span></p>
+  </div>
+  <p class="small muted" style="margin-top: 0.5em;">Pretraining: 15T base tokens + another 15T, on Nvidia H100 nodes (2TB RAM + 8 GPUs
+  via NVLink per node) — with zero loss spikes despite the new optimizer.
+  <a href="https://youtu.be/CwePo4847ho?t=1571">26:11</a></p>
+  <aside class="notes">His example for why early fusion matters concretely: vision-to-code only works if vision and text share one representation space from the start — bolting vision on afterward doesn't get you that.</aside>
+</section>
+
+<!-- 13 · Vision/text cross-improvement -->
+<section>
+  <div class="kicker">Two Modalities, Each Making The Other Better · <a href="https://youtu.be/CwePo4847ho?t=1736">28:56</a></div>
+  <h2>Vision improves text. Text improves vision.</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Finding 1: vision → text</h3>
+      <p>Training on vision-only RL tasks (counting, visual QA — no math or coding)
+      still lifted performance on text-heavy tasks. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1736">28:56</a></span></p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Finding 2: text → vision ("zero vision SFT")</h3>
+      <p class="lead">With a strong enough text base, joint vision+text training
+      reaches near-state-of-the-art vision performance using <strong>zero</strong>
+      vision SFT data. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1778">29:38</a></span></p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">His framing of why this is notable: historically, bolting vision onto a text model
+  hurt text performance — the claim here is that trained this way, the two modalities
+  reinforce each other instead. <a href="https://youtu.be/CwePo4847ho?t=1693">28:13</a></p>
+  <aside class="notes">"Zero vision SFT" is the more surprising of the two claims — worth pausing on if presenting live, since it implies a lot of the vision-specific fine-tuning work other labs do may be unnecessary given the right pretraining recipe.</aside>
+</section>
+
+<!-- 14 · Attention Residue sneak peek -->
+<section>
+  <div class="kicker">Next Up: Attention Residue · <a href="https://youtu.be/CwePo4847ho?t=1908">31:48</a></div>
+  <h2>Residual connections, rotated 90 degrees</h2>
+  <p>Framed via two borrowed ideas: ResNet made arbitrarily deep networks trainable in
+  the first place; and — credited to a point from Ilya Sutskever — "a residual
+  connection is a variant of LSTM, just rotated 90 degrees," i.e. depth-wise
+  recurrence instead of time-wise. <span class="sub-link"><a href="https://youtu.be/CwePo4847ho?t=1948">32:28</a></span></p>
+  <div class="diagram">
+    <span class="dbox">Residual, today<span class="sub">fixed addition of only the immediately previous layer's output</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox prim">Attention Residue<span class="sub">attention over ALL previous layers' hidden states, not just the last one</span></span>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">A block-attention variant groups layers (e.g. 4–16 per block) and only applies this
+  across block boundaries, to keep the compute/memory overhead down.
+  <a href="https://youtu.be/CwePo4847ho?t=2111">35:11</a></p>
+  <aside class="notes">This section is explicitly framed as a sneak peek / early research direction, not something already shipped in K2.5 — worth flagging as more speculative than the rest of the talk.</aside>
+</section>
+
+<!-- 15 · Attention Residue results + reflection -->
+<section>
+  <div class="kicker">Results &amp; A Mindset Shift · <a href="https://youtu.be/CwePo4847ho?t=2151">35:51</a></div>
+  <h2>+24% token efficiency, and old ideas keep giving</h2>
+  <div class="bigquote">
+    24% token-efficiency improvement — 50 trillion tokens behave like over 60
+    trillion — with the largest gains on coding, math, and reasoning benchmarks
+    (GPQA, MATH, HumanEval).
+    <span class="attr">— <a href="https://youtu.be/CwePo4847ho?t=2151">35:51</a></span>
+  </div>
+  <p class="small muted">His closing reflection: Adam (2014), attention (8+ years old), and residual
+  connections are all "ancient" by AI standards, yet still yielding big gains — a
+  shift he credits to today's "scaling ladder" and benchmark rigor replacing the
+  publish-an-idea-without-proof norm of a decade ago. <a href="https://youtu.be/CwePo4847ho?t=2275">37:55</a></p>
+  <aside class="notes">Nice line to quote directly if presenting live — it's the thesis for why revisiting "solved" building blocks (optimizers, attention, residual connections) is a legitimate research program right now, not just tinkering.</aside>
+</section>
+
+<!-- 16 · Closing takeaways -->
+<section>
+  <div class="kicker">Wrap Up</div>
+  <h2>If you only remember five things</h2>
+  <ul class="takeaways">
+    <li><strong>Token efficiency raises the ceiling on intelligence</strong> — it isn't
+      just a cost line. A 2x-efficient optimizer behaves like 2x the training data.
+      <span class="sub"><a href="https://youtu.be/CwePo4847ho?t=330">5:30</a></span></li>
+    <li><strong>Muon needed QK-clip to reach 1 trillion parameters</strong> without max
+      logits exploding past 1,000. <span class="sub"><a href="https://youtu.be/CwePo4847ho?t=494">8:14</a></span></li>
+    <li><strong>Kimi Linear swaps one global decay knob for a per-channel one</strong> —
+      and is claimed to be the first architecture to beat full attention on short,
+      long-input, and long-output tasks at once. <span class="sub"><a href="https://youtu.be/CwePo4847ho?t=1075">17:55</a></span></li>
+    <li><strong>Agent swarms need their own reward shaping.</strong> Instantiation +
+      finished + outcome rewards — or the model just reverts to running solo.
+      <span class="sub"><a href="https://youtu.be/CwePo4847ho?t=1284">21:24</a></span></li>
+    <li><strong>Kimi K2.5 fuses vision and text from token zero</strong> and reports
+      each modality improving the other, including near-SOTA vision with zero vision
+      SFT data. <span class="sub"><a href="https://youtu.be/CwePo4847ho?t=1778">29:38</a></span></li>
+  </ul>
+  <p class="credit">Full keynote: <a href="https://youtu.be/CwePo4847ho">youtu.be/CwePo4847ho</a> · transcript via ytlens (auto-captions) · full transcript saved alongside this deck as <code>transcript.md</code></p>
+  <aside class="notes">Good closing line to riff on: this talk treats "solved" building blocks — optimizers, attention, residual connections — as still-open research questions, and gets a double-digit-percent efficiency win each time it revisits one.</aside>
+</section>
+
+</div>
+</div>
+<script>

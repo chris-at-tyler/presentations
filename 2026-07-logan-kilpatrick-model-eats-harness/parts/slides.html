@@ -1,0 +1,334 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Sequoia Capital · Training Data</div>
+    <h1>Why the Model Eats the Harness</h1>
+    <p class="subtitle">Logan Kilpatrick (Google AI Studio &amp; the Gemini API) on agentic Gemini,
+    Antigravity, vibe-coded games, Omni, and what's left for startups once the model
+    absorbs the scaffolding.</p>
+    <p class="credit">
+      51-min interview, Sequoia Capital YouTube, uploaded 2026-06-11 · recap by Chris<br>
+      Source: <code>youtube.com/watch?v=cMAs8z2dehs</code> · auto-captions, so names/terms are lightly hedged
+    </p>
+  </div>
+  <aside class="notes">Recorded right after Google I/O. Logan runs AI Studio + the Gemini API — closest thing Google has to a developer-relations lead for Gemini. The whole interview orbits one idea: today's scaffolding (agent harnesses, tool-calling, RAG) is a scaffold BECAUSE the model can't do it natively yet — and that window keeps closing.</aside>
+</section>
+
+<!-- 2 · Antigravity as the new through-line -->
+<section>
+  <div class="kicker">Agentic Gemini Era · <a href="https://youtu.be/cMAs8z2dehs?t=107">1:47</a></div>
+  <h2>Antigravity: the new through-line</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Before Gemini</h3>
+      <p>Google's ~50-100 products had no shared thread — each shipped its own way of working.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Then: Gemini</h3>
+      <p>The model itself became the through-line. Every product started routing through it.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--amber)">Now: Antigravity</h3>
+      <p class="lead">The <a href="https://youtu.be/cMAs8z2dehs?t=211">same agent harness</a> behind the IDE, CLI, and SDK is being rebased into Search, the Gemini app, Cloud, and Workspace.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">"Coding is a specialized use case of the agent harness... it's proved to be the general-purpose agent harness." — <a href="https://youtu.be/cMAs8z2dehs?t=253">4:13</a></p>
+  <aside class="notes">The API was the through-line for the Gemini era; the harness is the through-line for the agentic era. Antigravity isn't just a coding IDE — it's the engine getting dropped into every Google surface.</aside>
+</section>
+
+<!-- 3 · Cannibalization -->
+<section>
+  <div class="kicker">Cannibalization &amp; Outcomes · <a href="https://youtu.be/cMAs8z2dehs?t=307">5:07</a></div>
+  <h2>Doesn't agentic AI cannibalize the business?</h2>
+  <div class="bigquote">
+    Everyone assumed AI answering your question would be negative-sum for search.
+    It's been the opposite — people search more, agents do more, both grow at once.
+    <span class="attr">— on search's "positive-sum" surprise, <a href="https://youtu.be/cMAs8z2dehs?t=337">5:37</a></span>
+  </div>
+  <ul class="takeaways">
+    <li><strong>Success stops meaning eyeball-time.</strong> "Maximizing outcome for customers... not maximizing eyeballs."
+      <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=421">7:01</a></span></li>
+    <li><strong>"Agent-led growth"</strong> is coming for shopping and ads the way it already hit search/SEO — Logan expects it to look like GEO (generative-engine optimization) rather than a clean break.
+      <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=462">7:42</a></span></li>
+  </ul>
+  <aside class="notes">Interviewer's framing: if an agent reads and replies to your email for you, do you ever open your inbox again? Logan's answer leans on Sundar's line that the last "AI kills search" panic didn't play out — but he hedges hard on the 3-5 year horizon.</aside>
+</section>
+
+<!-- 4 · Crawl / walk / run -->
+<section>
+  <div class="kicker">How Agentic Are We · <a href="https://youtu.be/cMAs8z2dehs?t=504">8:24</a></div>
+  <h2>Crawl, walk, run — Google grades itself</h2>
+  <div class="timeline">
+    <div class="phase pre">
+      <h3>Crawl</h3>
+      <ul>
+        <li>Most of the product surface, today</li>
+        <li>13B+ user products &rarr; stewardship, not speed</li>
+        <li>"Long tail of customers... want to be in the driver's seat"</li>
+      </ul>
+    </div>
+    <div class="phase dur">
+      <h3>Walk</h3>
+      <ul>
+        <li>Gemini app: a 24/7 always-on agent</li>
+        <li>One of the frontier use cases inside Google</li>
+      </ul>
+    </div>
+    <div class="phase post">
+      <h3>Run</h3>
+      <ul>
+        <li>Antigravity: autonomous coding agents</li>
+        <li class="star">"Rebuilding operating systems... billions of tokens, thousands of dollars"</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes"><a href="https://youtu.be/cMAs8z2dehs?t=547">9:07</a> — the crawl pace is deliberate, not a capability gap: bringing a billion-user product along without breaking how people relate to it. <a href="https://youtu.be/cMAs8z2dehs?t=629">10:29</a>: his aside that slide decks persist because humans like information in one fixed place is a good "why compartmentalized products beat one do-everything agent" bit.</aside>
+</section>
+
+<!-- 5 · Gemini vs Claude/Codex -->
+<section>
+  <div class="kicker">Gemini vs Codex / Claude · <a href="https://youtu.be/cMAs8z2dehs?t=862">14:22</a></div>
+  <h2>"My friends are 50/50 Claude and Codex — not much Gemini"</h2>
+  <p>Logan doesn't dodge it. His read: <strong>the narrative moves faster than the model
+  cycle</strong> — December was "Google has won," then agentic coding exploded over the
+  holidays and swung it right back.</p>
+  <div class="cards">
+    <div class="card">
+      <h3>Why the Windsurf deal happened</h3>
+      <p>You can't build a great coding model for long-running agent work without a product
+      that actually does that work daily. <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=970">16:10</a></span></p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">The proof point: 3 Flash</h3>
+      <p class="lead">A <em>flash</em> model that codes better than any Pro model Google has shipped —
+      "the pro models were really good before." <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=1011">16:51</a></span></p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">His counter to "you're behind": pre-training windows are invisible from outside. 3.5 Flash's whole jump was <strong>post-training only</strong> — the pre-training gains haven't landed yet. <a href="https://youtu.be/cMAs8z2dehs?t=1054">17:34</a></p>
+  <aside class="notes">Also worth relaying: dogfooding isn't mandated as exclusive — DeepMind engineers use every model to stay grounded — but Gemini has to be the daily driver, and 100k+ Google engineers using it is framed as a feedback-flywheel advantage rivals can't match. <a href="https://youtu.be/cMAs8z2dehs?t=1097">18:17</a></aside>
+</section>
+
+<!-- 6 · THESIS: the model eats the harness -->
+<section>
+  <div class="kicker amber">The Central Thesis · <a href="https://youtu.be/cMAs8z2dehs?t=2321">38:41</a></div>
+  <h2>"The model eats the harness"</h2>
+  <div class="diagram">
+    <span class="dbox">1 · Bare weights<span class="sub">2 years ago: tokens in, tokens out</span></span>
+    <span class="arrow">&rarr;</span>
+    <span class="dbox exp">2 · Weights + external scaffolding<span class="sub">tool calling, search, code exec, containers — today's "alpha"</span></span>
+    <span class="arrow">&rarr;</span>
+    <span class="dbox prim">3 · Model absorbs the scaffolding<span class="sub">it becomes native model behavior</span></span>
+  </div>
+  <p style="margin-top: 0.9em;">"What we've historically thought of as the model is not the model anymore... the
+  scaffolding is often a couple of steps ahead of what's baked into the model. Then the model
+  eats that scaffolding." <span class="muted small">— <a href="https://youtu.be/cMAs8z2dehs?t=2363">39:23</a></span></p>
+  <p class="small muted">His prediction: today's harness-building alpha "perhaps won't be true, at least the way we think of it today, in 12 months." <a href="https://youtu.be/cMAs8z2dehs?t=2403">40:03</a></p>
+  <aside class="notes">This is the title of the talk and the spine of the whole interview — vibe-coded games, world models, Android apps in AI Studio are all instances of the same pattern: scaffolding proves a use case works, then the frontier model swallows it.</aside>
+</section>
+
+<!-- 7 · Harness lock-in counterpoint -->
+<section>
+  <div class="kicker">Counterpoint · <a href="https://youtu.be/cMAs8z2dehs?t=2446">40:46</a></div>
+  <h2>Then why do teams keep building their own harness?</h2>
+  <p>Interviewer's pushback: companies build custom harnesses precisely to avoid
+  lock-in to one provider's agent stack. Logan's answer: that's true <em>today</em>,
+  less true as models generalize.</p>
+  <div class="bigquote" style="font-size: 1.1em;">
+    "You don't have a generalized model if it can't use another harness... we need
+    something like <strong>harness-bench</strong> — actually measuring how good models
+    are at adapting to different harnesses."
+    <span class="attr">— <a href="https://youtu.be/cMAs8z2dehs?t=2486">41:28</a></span>
+  </div>
+  <p class="small muted">His shrug on true out-of-distribution cases: "you're still going to be completely
+  out of distribution even if you're using your own harness — so not sure it matters much."</p>
+  <aside class="notes">A benchmark that doesn't exist yet, by his own admission — flag it as speculative, not something to go look up.</aside>
+</section>
+
+<!-- 8 · Where startups still win -->
+<section>
+  <div class="kicker">Scaffolding &amp; Startup Edge · <a href="https://youtu.be/cMAs8z2dehs?t=2312">38:32</a></div>
+  <h2>If the model eats the harness, what's left to build?</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Focus is the startup superpower.</strong>
+      <span class="why">Big labs "have an obligation to do a bunch of things"; a focused team can run laps around them in one vertical — <a href="https://youtu.be/cMAs8z2dehs?t=2571">42:51</a></span></li>
+    <li><span class="n">2</span><strong>Coding closed the gap on incumbents.</strong>
+      <span class="why">Faster shipping erodes the moat of large, established codebases — <a href="https://youtu.be/cMAs8z2dehs?t=2614">43:34</a></span></li>
+    <li><span class="n">3</span><strong>The agentic primitive is a new category</strong> to build on, risk tolerance included — teams willing to take more risk can win a cohort that wants that. <span class="why"><a href="https://youtu.be/cMAs8z2dehs?t=2614">43:34</a></span></li>
+  </ul>
+  <p class="small muted" style="margin-top: 0.6em;">His honest caveat: "capability overhang" is a real threat, and there is a real
+  question of whether general-purpose labs simply out-execute a given vertical. <a href="https://youtu.be/cMAs8z2dehs?t=2529">42:09</a></p>
+  <aside class="notes">24 months ago the fear was "less opportunity for startups." His read now: the opposite happened — "there's never been more opportunity to go build something." <a href="https://youtu.be/cMAs8z2dehs?t=2508">41:48</a></aside>
+</section>
+
+<!-- 9 · Vibe coding games -->
+<section>
+  <div class="kicker">Vibe Coding Games · <a href="https://youtu.be/cMAs8z2dehs?t=1151">19:11</a></div>
+  <h2>The tweet check: "vibe code games by end of 2025"</h2>
+  <div class="cols">
+    <div>
+      <p class="lead">His verdict on his own October prediction: <strong>close, not quite.</strong>
+      Not AAA — "you're not building the next Call of Duty" — but closer than ever.
+      <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=1479">24:39</a></span></p>
+      <p class="small muted">Prediction on the actual gap: <strong>"I want to say this year"</strong> for a random person with a good idea to vibe-code something genuinely fun. <a href="https://youtu.be/cMAs8z2dehs?t=1627">27:07</a></p>
+    </div>
+    <div>
+      <div class="prompt">
+        <span class="plabel">Why it's not solved yet</span>
+        Model quality isn't the gap — <strong>scaffolding</strong> is. Sprite generation,
+        replayability, "taste," an orchestration layer around the model — none of that
+        comes free from a coding agent, even with tools like 3.js. <a href="https://youtu.be/cMAs8z2dehs?t=1520">25:20</a>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Data point: at one time ~20% of everything built in AI Studio was games (<a href="https://youtu.be/cMAs8z2dehs?t=1520">25:20</a>) — not the top category anymore as the user base broadened; finance/crypto sits around ~20% now and gen-media took share too (<a href="https://youtu.be/cMAs8z2dehs?t=1562">26:02</a>).</aside>
+</section>
+
+<!-- 10 · World models blur -->
+<section>
+  <div class="kicker">World Models vs Engines · <a href="https://youtu.be/cMAs8z2dehs?t=1681">28:01</a></div>
+  <h2>Game engine + coding agent, not world model — yet</h2>
+  <p>Near-term alpha for game creation is still <strong>coding agent + traditional game
+  engine</strong>. World models are architecturally different and exciting, but in their
+  current open-ended form aren't scaffolded for a reusable, replayable game loop.</p>
+  <p class="bigquote" style="font-size: 1.05em;">
+    "The definition of world models will blur." Historically a world model meant an
+    action-conditioned video model — expensive, "very very not scalable" to run live.
+    Omni is something else: understanding of the world, in a single model.
+    <span class="attr">— <a href="https://youtu.be/cMAs8z2dehs?t=1815">30:15</a></span>
+  </p>
+  <aside class="notes">Give this two minutes max — it's the conceptual bridge to the Omni slide, not a topic on its own.</aside>
+</section>
+
+<!-- 11 · Omni: one model, not eight -->
+<section>
+  <div class="kicker">Single Omni Model · <a href="https://youtu.be/cMAs8z2dehs?t=1870">31:10</a></div>
+  <h2>Omni: one model, not eight</h2>
+  <div class="diagram">
+    <span class="dbox">Text (Gemini)</span>
+    <span class="dbox">Audio</span>
+    <span class="dbox">Music (Lyria)</span>
+    <span class="dbox">Images (Nano Banana)</span>
+    <span class="dbox">Video (Veo)</span>
+  </div>
+  <div class="diagram">
+    <span class="arrow">&darr; used to require routing across all five &darr;</span>
+  </div>
+  <div class="diagram">
+    <span class="dbox prim">Omni — one model, any input &rarr; any output<span class="sub">first shipped use case: video editing, via the "Omni Flash" first iteration</span></span>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">Not perfect everywhere yet — quality on the non-video-editing modes isn't
+  state-of-the-art, so those haven't shipped. <a href="https://youtu.be/cMAs8z2dehs?t=1899">31:39</a></p>
+  <aside class="notes">The demo he describes: someone in a live-talk audience edited a photo of him mid-speech with Omni, dropping a dog onto the stage in real time, with the crowd's reaction and his own gestures staying coherent — that's the "world understanding" he means, not just pixel editing. <a href="https://youtu.be/cMAs8z2dehs?t=0">0:00</a></aside>
+</section>
+
+<!-- 12 · Authentic gen media -->
+<section>
+  <div class="kicker">Authentic Gen Media · <a href="https://youtu.be/cMAs8z2dehs?t=2030">33:50</a></div>
+  <h2>Omni edits the scene, not the person</h2>
+  <div class="bigquote">
+    "I don't use AI to make any of the content I produce — it's all my words, always
+    my voice, always my image... What I like so much about Omni is that it's not
+    changing <em>me</em>. It's changing a bunch of these other bits which are not me."
+    <span class="attr">— <a href="https://youtu.be/cMAs8z2dehs?t=2027">33:47</a></span>
+  </div>
+  <p class="small muted">His stated bar for gen-media taste: keep the words and the person real; let the
+  model touch only the set, the background, the bits that aren't personhood.</p>
+  <aside class="notes">Nice contrast to raise live: this is explicitly not the "AI avatar" vision — it's closer to "the same interview, better production value."</aside>
+</section>
+
+<!-- 13 · Android in AI Studio -->
+<section>
+  <div class="kicker">Vibe Coding Android Apps · <a href="https://youtu.be/cMAs8z2dehs?t=2119">35:19</a></div>
+  <h2>350,000 Android apps, one week</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--amber)">The number</h3>
+      <p class="lead" style="font-size: 1.6em; font-weight: 800; color: var(--amber);">350,000 apps</p>
+      <p>Built in AI Studio in the week before this interview — "probably no one was
+      going to build before." <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=2238">37:18</a></span></p>
+    </div>
+    <div class="card">
+      <h3>Logan's own first app</h3>
+      <p>Not a crypto app — a small gardening tracker for trees he's planting in his
+      backyard. His words: "I just did a plant one." <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=2152">35:52</a></span></p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">Why native still matters next to "the web is powerful": OS-level richness (his
+  example: texting apps feel richer than any AI chat app he's used) isn't reachable
+  from the browser. <a href="https://youtu.be/cMAs8z2dehs?t=2279">37:59</a></p>
+  <aside class="notes">Strategic framing: Android-in-AI-Studio exists partly to expose people to the rest of the Google ecosystem without routing them through nine separate product UIs. <a href="https://youtu.be/cMAs8z2dehs?t=2152">35:52</a></aside>
+</section>
+
+<!-- 14 · Inside DeepMind culture -->
+<section>
+  <div class="kicker">Inside DeepMind Culture · <a href="https://youtu.be/cMAs8z2dehs?t=2634">43:54</a></div>
+  <h2>Three observations from inside GDM</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>1 · Focus tension</h3>
+      <p>A huge portfolio means occasionally another lab "pulls ahead" somewhere GDM
+      under-invested — then the team closes the gap. <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=2656">44:16</a></span></p>
+    </div>
+    <div class="card">
+      <h3>2 · Leadership sets the DNA</h3>
+      <p>Demis (Nobel laureate scientist) vs. Sam ("one of the world's best
+      businessmen") vs. Dario ("somewhat esoteric") — each lab's culture visibly
+      traces back to who leads it. <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=2737">45:37</a></span></p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">3 · "Engine room of Google"</h3>
+      <p>Deep research-lab culture on one side, applied partnership across Android,
+      Cloud, Gmail, Workspace on the other — deploying to 13 of the world's
+      billion-user products. <span class="sub-link"><a href="https://youtu.be/cMAs8z2dehs?t=2821">47:01</a></span></p>
+    </div>
+  </div>
+  <aside class="notes">He's watched the Demis "Thinking Game" documentary "a few times" and ties today's culture directly back to the original DeepMind ethos: put smart people on a hard problem and let them go.</aside>
+</section>
+
+<!-- 15 · The Gavin Belson line -->
+<section>
+  <div class="kicker amber">On Mission, Not Competition · <a href="https://youtu.be/cMAs8z2dehs?t=2778">46:18</a></div>
+  <div class="bigquote" style="font-size: 1.4em;">
+    "We can't let other people make the world a better place more than we can."
+    <span class="attr">— his favorite line from the show Silicon Valley, on how easy it is to lose
+    sight of DeepMind's actual mission inside the SWE-bench leaderboard race — <a href="https://youtu.be/cMAs8z2dehs?t=2778">46:18</a></span>
+  </div>
+  <p class="small muted">Said half-laughing at himself — the interviewer immediately dubs it "the Gavin
+  Belson quote," and it lands as self-aware rather than a straight mission statement.</p>
+  <aside class="notes">Good beat to pause on live — it lands as self-aware rather than corporate.</aside>
+</section>
+
+<!-- 16 · Closing takeaways -->
+<section>
+  <div class="kicker">Wrap Up</div>
+  <h2>If you only remember five things</h2>
+  <ul class="takeaways">
+    <li><strong>The model eats the harness.</strong> Scaffolding proves a use case works;
+      the frontier model absorbs it soon after — coding agents today, other domains next.
+      <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=2321">38:41</a></span></li>
+    <li><strong>Google's agentic push is "crawl" by design,</strong> not by capability gap —
+      stewardship of 13B+ user products, not a technology ceiling. <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=504">8:24</a></span></li>
+    <li><strong>Omni is one model, not a router across five.</strong> First real use case
+      shipped is video editing; it edits the scene, deliberately not the person.
+      <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=1870">31:10</a> &amp; <a href="https://youtu.be/cMAs8z2dehs?t=2027">33:47</a></span></li>
+    <li><strong>Vibe-coded games: model quality isn't the gap, scaffolding is.</strong> His
+      call — a stranger vibe-codes a genuinely fun game "this year."
+      <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=1627">27:07</a></span></li>
+    <li><strong>Startups don't lose to "the model eats everything."</strong> Focus beats a
+      general-purpose lab that's obligated to do everything at once.
+      <span class="sub"><a href="https://youtu.be/cMAs8z2dehs?t=2571">42:51</a></span></li>
+  </ul>
+  <p class="credit">Full interview: <a href="https://youtu.be/cMAs8z2dehs">youtu.be/cMAs8z2dehs</a> · transcript via ytlens (auto-captions)</p>
+  <aside class="notes">Good closing line to riff on: the whole hour is really one idea wearing five costumes — scaffolding is a temporary state, not a moat, and the interesting question for any builder is "what do I do that the model can't eat."</aside>
+</section>
+
+</div>
+</div>
+<script>

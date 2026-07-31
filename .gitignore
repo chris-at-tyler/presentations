@@ -1,2 +1,6 @@
 .DS_Store
 node_modules/
+
+# Private, unpublished — built from a leaked/confidential source transcript.
+# Kept local for personal reference only; do not commit or push.
+/2026-07-deepseek-liang-wenfeng-investor-meeting/
