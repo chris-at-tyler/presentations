@@ -1,0 +1,176 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Lunch &amp; Learn · Working with AI Agents · Part 5</div>
+    <h1>The New Rules of Context Engineering</h1>
+    <p class="subtitle">Anthropic deleted 80%+ of Claude Code's system prompt for Claude 5 models — and nothing broke.<br>What that means for every CLAUDE.md, skill, and prompt we maintain.</p>
+    <p class="credit">
+      Based on <strong>"The New Rules of Context Engineering for Claude 5 Generation Models"</strong> — claude.com blog, 2026<br>
+      Sequel to part 2 ("write great skills") — same artifacts, new rules · ~5–10 min
+    </p>
+  </div>
+  <aside class="notes">Short one — news-style talk, not a workshop. Through-line: most of what we learned about prompting was written for models that needed babysitting. The Claude 5 generation doesn't — and Anthropic just proved it on their own product, at scale. Everything we maintain (CLAUDE.md files, skills, prompts) was written under the old assumptions.</aside>
+</section>
+
+<!-- 2 · The headline -->
+<section>
+  <div class="kicker">The Experiment</div>
+  <h2>They deleted 80% of the system prompt</h2>
+  <div class="bigquote">
+    Removed over 80% of Claude Code's system prompt for advanced Claude 5 models — with <em>no measurable performance loss</em>.
+    <span class="attr">— the blog's opening result, on their own flagship product</span>
+  </div>
+  <ul class="takeaways">
+    <li><strong>The old prompt was over-constraining.</strong> Rules written to protect weaker models now just force extra deliberation — the model burns effort reconciling instructions instead of working.</li>
+    <li><strong>Real conflicts had shipped.</strong> One layer said "leave documentation as appropriate," another said "DO NOT add comments." Every response paid the tax.</li>
+    <li><strong>Context has more places to live now.</strong> Memory, skills, deferred-loading tools — the system prompt no longer has to carry everything.</li>
+  </ul>
+  <aside class="notes">Emphasize this wasn't a lab benchmark — it's Claude Code, their most-used agent product. The conflict example is verbatim from the post; ask the room how many of our own instruction files might contradict each other, since nobody has ever audited them as a set.</aside>
+</section>
+
+<!-- 3 · The map -->
+<section>
+  <div class="kicker">The Map</div>
+  <h2>Five shifts, one direction</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Rules → Judgment</strong><span class="why">intent statements over never/always — the model can read the room now</span></li>
+    <li><span class="n">2</span><strong>Examples → Interface design</strong><span class="why">expressive parameters and enums instead of worked examples</span></li>
+    <li><span class="n">3</span><strong>Upfront → Progressive disclosure</strong><span class="why">load context at the moment it's needed, not all at turn one</span></li>
+    <li><span class="n">4</span><strong>Repetition → Say it once</strong><span class="why">tool guidance lives in the tool description — nowhere else</span></li>
+    <li><span class="n">5</span><strong>Manual memory → Auto-memory</strong><span class="why">Claude saves relevant context itself; the # hotkey era is over</span></li>
+  </ul>
+  <p class="small muted" style="margin-top: 0.5em;">Bonus shift: markdown specs → <strong>rich references</strong> — HTML mockups, test suites, rubrics beat prose descriptions.</p>
+  <aside class="notes">The one direction: away from controlling the model with prose, toward trusting its judgment and designing its environment. We spotlight shifts 1–3 next; 4 and 5 are self-explanatory (say things once; memory is automatic now — we already live with auto-memory daily).</aside>
+</section>
+
+<!-- 4 · Shift 1 spotlight -->
+<section>
+  <div class="kicker">Shift 1 · Rules → Judgment</div>
+  <h2>From "never do X" to "match the room"</h2>
+  <div class="file">
+    <div class="fname">Claude Code system prompt — comment philosophy, then vs. now</div>
+    <pre><span class="dim">THEN:</span>
+"Default to writing no comments.
+ <span class="hl">Never</span> write multi-paragraph docstrings."
+
+<span class="dim">NOW:</span>
+"Write code that <span class="hl">reads like the surrounding code</span>:
+ match its comment density, naming, and idiom."</pre>
+  </div>
+  <p class="small" style="margin-top: 0.7em;">The new line is shorter, covers more cases, and is right more often — <strong>judgment generalizes; rules don't.</strong> A "never" written for a heavily-commented codebase is wrong in a sparse one, and vice versa.</p>
+  <p class="small muted">Keep hard rules where a miss is expensive — deploys, git pushes, production data. What got deleted was <em>style micromanagement</em>.</p>
+  <aside class="notes">This is the emotional core of the talk. Every never/always we've written was a bet that we could enumerate the situations better than the model could judge them — that bet has flipped. But be precise: guardrails with real blast radius stay. The test: "if the model gets this wrong once, what does it cost?"</aside>
+</section>
+
+<!-- 5 · Shift 2 spotlight -->
+<section>
+  <div class="kicker">Shift 2 · Examples → Interfaces</div>
+  <h2>The schema is the instruction</h2>
+  <div class="cols">
+    <div style="flex: 1.15;">
+      <div class="file">
+        <div class="fname">Todo tool — the enum does the teaching</div>
+        <pre>status: <span class="hl">pending | in_progress | completed</span>
+
+<span class="dim">description:</span>
+"Keep <span class="hl">exactly one</span> item in_progress
+ at a time."</pre>
+      </div>
+    </div>
+    <div>
+      <ul class="principles">
+        <li><span class="n">✓</span><strong>Zero worked examples</strong><span class="why">the enum + one constraint yield correct behavior</span></li>
+        <li><span class="n">✓</span><strong>Zero tokens per turn</strong><span class="why">examples in a system prompt are paid for on every request</span></li>
+        <li><span class="n">✓</span><strong>Part 2 echo</strong><span class="why">same lesson as leading words in skills — the artifact's shape steers behavior</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.6em;">If you're pasting usage examples to fix a misbehaving tool, the fix is usually a better parameter name, an enum, or a constraint in the description.</p>
+  <aside class="notes">Frame for anyone building agents or MCP tools: interface design IS prompt engineering now. A well-named enum is worth a paragraph of examples, and it can't drift out of sync with the code the way examples do.</aside>
+</section>
+
+<!-- 6 · Shift 3 spotlight -->
+<section>
+  <div class="kicker">Shift 3 · Progressive Disclosure</div>
+  <h2>Context on demand, not all at once</h2>
+  <div class="diagram" style="margin-top: 0.7em;">
+    <span class="dbox">turn 1<span class="sub">lean prompt: purpose + gotchas</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">task appears<span class="sub">skill loads its body</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox">tool needed<span class="sub">deferred schema fetched</span></span>
+    <span class="arrow">→</span>
+    <span class="dbox prim">detail arrives exactly when relevant</span>
+  </div>
+  <ul class="takeaways" style="margin-top: 0.8em;">
+    <li><strong>The win is mechanical.</strong> Tokens not spent every turn, attention not diluted across 40 scenarios that don't apply to this task.</li>
+    <li><strong>You already know this pattern.</strong> A skill <em>is</em> progressive disclosure: name + description always loaded, full body only when invoked. Long skills should split into files the same way.</li>
+  </ul>
+  <aside class="notes">Part 2 callback lands here: the room has written skills, so they've already done progressive disclosure without the vocabulary. The new part is that it's now the organizing principle for ALL context — system prompts and CLAUDE.md included, not just skills.</aside>
+</section>
+
+<!-- 7 · Layer cheat sheet -->
+<section>
+  <div class="kicker">The Cheat Sheet</div>
+  <h2>Where each kind of context belongs</h2>
+  <div class="matrix">
+    <div class="q kk">
+      <h3>System prompt</h3>
+      <p>Product context and agent purpose — what world is this agent operating in? Where the real design effort goes when you build a custom agent.</p>
+    </div>
+    <div class="q ku">
+      <h3>CLAUDE.md</h3>
+      <p>Lightweight. Repo purpose in a line, then <strong>gotchas and non-obvious patterns only</strong>. Never state what the model can see for itself.</p>
+    </div>
+    <div class="q uk">
+      <h3>Skills</h3>
+      <p>Team opinions and best practices, loaded selectively. Split long ones into progressive-disclosure files. Don't over-constrain.</p>
+    </div>
+    <div class="q uu">
+      <h3>References</h3>
+      <p>Code beats prose: HTML mockups, test suites, rubrics — @mentioned when needed. Higher fidelity in, better results out.</p>
+    </div>
+  </div>
+  <aside class="notes">This is the slide to screenshot. The references quadrant deserves a beat: "make it look like this mockup" or "make this test suite pass" outperforms three paragraphs of description — the reference is unambiguous where prose never is.</aside>
+</section>
+
+<!-- 8 · Monday morning -->
+<section>
+  <div class="kicker amber">Monday Morning</div>
+  <h2>Auditing our own context estate</h2>
+  <ul class="takeaways">
+    <li><strong>Hunt conflicts first.</strong> Instructions accrete in layers — global config, repo files, skills — and nobody has ever read ours as a single document. Contradictions cost every single turn.
+      <span class="sub">The blog's tip: <code>claude doctor</code> can audit an existing setup.</span></li>
+    <li><strong>Rewrite never/always into intent.</strong> Keep the hard rules with real blast radius; convert style micromanagement into one "match the surrounding code"-shaped line.</li>
+    <li><strong>Upgrade one workflow to rich references.</strong> Next UI task: hand the agent the mockup. Next bugfix: hand it the failing test. Compare against your prose-spec baseline.</li>
+  </ul>
+  <aside class="notes">Deliberately small asks — this is pruning on touch, not a rewrite sprint. The conflict hunt is the highest-value one: contradictions are pure waste, no judgment call required to delete them. Challenge: next time you touch a context file, delete more lines than you add.</aside>
+</section>
+
+<!-- 9 · Wrap -->
+<section>
+  <div class="kicker amber">Wrap Up</div>
+  <h2>Takeaways</h2>
+  <div class="bigquote">
+    "Trust the model" replaces "control the model."
+    <span class="attr">— the blog's closing move, and the whole talk in five words</span>
+  </div>
+  <ul class="takeaways">
+    <li><strong>Context written for a weaker model is wrong for this one.</strong> Guardrails age — prune them on every touch, or they quietly become the bottleneck.</li>
+    <li><strong>Design environments, not lectures.</strong> Interfaces, enums, progressive disclosure — structure beats prose, and it's cheaper per turn.</li>
+    <li><strong>Your CLAUDE.md should be getting shorter.</strong> If it only ever grows, it's accumulating obviousness and conflict, not knowledge.</li>
+  </ul>
+  <p class="credit">Source: claude.com/blog — "The New Rules of Context Engineering for Claude 5 Generation Models" · Series: chris-at-tyler.github.io/presentations</p>
+  <aside class="notes">Close on the third takeaway — it's checkable: diff your CLAUDE.md's line count over the last quarter. If the graph only goes up, this talk was for you. Q&A.</aside>
+</section>
+
+</div>
+</div>
+<script>

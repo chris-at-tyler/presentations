@@ -1,0 +1,180 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Lunch &amp; Learn · Working with AI Agents · Part 6</div>
+    <h1>MCP Goes Stateless</h1>
+    <p class="subtitle">The 2026-07-28 spec revision is the biggest architectural change since MCP launched —<br>and it just made building a server a weekend project instead of an infrastructure one.</p>
+    <p class="credit">
+      Based on <strong>"Bringing MCP 2026-07-28 to Claude"</strong> — claude.com blog, July 28, 2026<br>
+      Full spec: modelcontextprotocol.io/specification/2026-07-28 · ~5–10 min
+    </p>
+  </div>
+  <aside class="notes">News-style talk. Two audiences in the room: everyone consumes MCP daily (Jira, CI/CD, browser automation — all MCP servers in our sessions), and a few might build one. The stateless change matters to both. Fifth spec revision — MCP is iterating fast but this one is architectural, not incremental.</aside>
+</section>
+
+<!-- 2 · Why care -->
+<section>
+  <div class="kicker">The Context</div>
+  <h2>MCP is infrastructure now</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>400M+</h3>
+      <p class="lead">Monthly SDK downloads.</p>
+      <p>4× growth in a single year — this is npm/PyPI-scale plumbing, not an experiment.</p>
+    </div>
+    <div class="card">
+      <h3>950+</h3>
+      <p class="lead">Servers in Claude's connectors directory.</p>
+      <p>Figma, Intuit, Netlify, PostHog, Xero, Zoom all shipped testimonials with this release.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--amber)">5th</h3>
+      <p class="lead">Spec revision.</p>
+      <p>And the first one that changes the protocol's fundamental shape rather than adding to it.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.8em;">We already live on it: ticket systems, CI/CD and feature flags, browser automation — every one an MCP server inside our daily agent sessions.</p>
+  <aside class="notes">The point of the numbers: MCP won. The question stopped being "which protocol" and became "how good is the protocol" — which is what this revision addresses. Keep our internal specifics generic; the deck is public.</aside>
+</section>
+
+<!-- 3 · The big change -->
+<section>
+  <div class="kicker">The Big Change</div>
+  <h2>From session to request/response</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--coral)">Before</h3>
+      <p class="lead">Bidirectional, stateful.</p>
+      <p>Long-lived sessions, server-side state to babysit, sticky processes to host — awkward on serverless, awkward behind load balancers.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--teal)">Now</h3>
+      <p class="lead">Request/response core.</p>
+      <p>A server is a plain HTTP workload. Serverless and edge friendly, scales like any web service, nothing to pin.</p>
+    </div>
+  </div>
+  <div class="bigquote" style="font-size: 1.0em; margin-top: 0.8em;">
+    The stateless core makes MCP "a first-class HTTP workload with no session management to work around."
+    <span class="attr">— Netlify, from the announcement</span>
+  </div>
+  <aside class="notes">Netlify's line is the whole story in one sentence — everything else in the release hangs off this change. If anyone asks where stateful interaction patterns went: they move into the extensions framework (next slide), out of the core.</aside>
+</section>
+
+<!-- 4 · Extensions graduate -->
+<section>
+  <div class="kicker">Extensions</div>
+  <h2>Apps &amp; Tasks are official</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>MCP Apps</h3>
+      <p class="lead">Interactive UI, inline in the conversation.</p>
+      <p>A server can render real interface — not walls of text — and users see what a connector did without switching context.</p>
+    </div>
+    <div class="card">
+      <h3>MCP Tasks</h3>
+      <p class="lead">Long-running work, first-class.</p>
+      <p>Jobs that outlive a request/response cycle — syncs, builds, migrations — no longer need to be faked over polling hacks.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 0.8em;">Both graduated from experimental status into <strong>versioned, formal extensions</strong> — and the framework is the real news: capabilities can now evolve <em>without touching the core protocol</em>.</p>
+  <aside class="notes">Analogy that lands: extensions are to MCP what official middleware is to HTTP — the core stays small and stable, the interesting stuff versions independently. That's how a protocol survives its own growth.</aside>
+</section>
+
+<!-- 5 · Auth grows up -->
+<section>
+  <div class="kicker">Security</div>
+  <h2>Enterprise auth, no more workarounds</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>OAuth 2.0 / OIDC compatibility</strong><span class="why">production-grade identity standards, not bespoke token schemes</span></li>
+    <li><span class="n">2</span><strong>Direct enterprise IdP integration</strong><span class="why">Entra and Okta named explicitly — the systems enterprises actually run</span></li>
+    <li><span class="n">3</span><strong>Enterprise-managed auth on Claude's side</strong><span class="why">an admin authorizes once per org; users inherit access through existing IdP groups — zero-touch on first login</span></li>
+  </ul>
+  <p class="small" style="margin-top: 0.7em;"><strong>What this retires:</strong> the API-key-per-developer pattern — every dev minting a personal token and stashing it in an env var or config file just to wire up a connector.</p>
+  <aside class="notes">Most enterprise-relevant slide. Today's reality for most teams: personal access tokens sprinkled across dev machines — an offboarding and audit nightmare. IdP-group-governed access is how every other enterprise system already works; MCP just joined them. Adoption needs the server side to support it too — watch your vendors.</aside>
+</section>
+
+<!-- 6 · What Claude shipped -->
+<section>
+  <div class="kicker">The Platform</div>
+  <h2>What Claude shipped around the spec</h2>
+  <div class="matrix">
+    <div class="q kk">
+      <h3>MCP Apps support</h3>
+      <p>Connector UI renders inline in conversations — activity visible without context-switching away.</p>
+    </div>
+    <div class="q ku">
+      <h3>Enterprise-managed auth</h3>
+      <p>One org-level grant; users inherit via IdP groups. Zero-touch setup on first login.</p>
+    </div>
+    <div class="q uu">
+      <h3>Observability dashboard</h3>
+      <p>For connector publishers: adoption, errors, and latency per Claude surface.</p>
+    </div>
+    <div class="q uk">
+      <h3>MCP Tunnels <span class="tag">research preview</span></h3>
+      <p>Claude reaches MCP servers on <strong>private networks</strong> — no public exposure, no inbound firewall rules, no IP allowlists.</p>
+    </div>
+  </div>
+  <aside class="notes">Tunnels gets the amber highlight deliberately — it's the one that changes what's reachable. Anything living on a private network could become a Claude-accessible server without an exposed endpoint. Research preview = right capability, wrong maturity; watch it, don't build on it.</aside>
+</section>
+
+<!-- 7 · For us as consumers -->
+<section>
+  <div class="kicker amber">What It Means · Consuming</div>
+  <h2>Nothing breaks, three things to watch</h2>
+  <ul class="takeaways">
+    <li><strong>Existing connectors keep working.</strong> Spec support is "rolling out across Claude products soon" — this is a migration target for servers, not a breaking change for users.</li>
+    <li><strong>Watch vendor adoption for the auth win.</strong> When the servers we rely on adopt the new spec, per-dev API keys can give way to org-level, IdP-governed access. That's a request to make of vendors, not something we can flip ourselves.</li>
+    <li><strong>Tunnels put private services in reach.</strong> Internal APIs and in-network tools become candidates for agent access without security exceptions — flag it for a future spike.</li>
+  </ul>
+  <aside class="notes">Deliberately calm slide — no action required today. The auth point is the one worth a follow-up: inventory which of our connectors still ride on personal tokens, so we know who to nudge and what to migrate when support lands.</aside>
+</section>
+
+<!-- 8 · If we ship one -->
+<section>
+  <div class="kicker">What It Means · Building</div>
+  <h2>A server is now a weekend, not a project</h2>
+  <div class="cards">
+    <div class="card">
+      <h3 style="color: var(--teal)">Stateless core</h3>
+      <p class="lead">It's just an HTTP handler.</p>
+      <p>Deployable on whatever you already run — no session infrastructure, no sticky routing, no special hosting.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--violet)">Tasks</h3>
+      <p class="lead">Long jobs fit natively.</p>
+      <p>Data syncs, migrations, report generation — the protocol now models work that takes minutes, not milliseconds.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--amber)">Apps</h3>
+      <p class="lead">Results as UI.</p>
+      <p>A lookup tool can return an interactive view instead of a text wall.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top: 0.8em;">Ideas, not commitments — a read-only internal lookup server is the classic first candidate: low risk, immediately useful in every agent session.</p>
+  <aside class="notes">The barrier-drop is the takeaway: pre-revision, "should we build an MCP server" meant session infrastructure questions. Now it's a plain HTTP endpoint speaking a well-documented protocol. If someone in the room has an internal system agents keep needing data from — that's the candidate.</aside>
+</section>
+
+<!-- 9 · Wrap -->
+<section>
+  <div class="kicker amber">Wrap Up</div>
+  <h2>Takeaways</h2>
+  <ul class="takeaways">
+    <li><strong>Stateless is the story.</strong> Serverless hosting, simpler servers, standard scaling — every other headline in the release follows from the core going request/response.</li>
+    <li><strong>Extensions are the future-proofing.</strong> Apps and Tasks graduate, and the framework means capabilities version without spec churn.</li>
+    <li><strong>Auth is the enterprise unblock.</strong> OAuth/OIDC plus IdP-group inheritance ends the personal-token workaround era — as soon as your vendors adopt it.</li>
+  </ul>
+  <p class="credit">Source: claude.com/blog — "Bringing MCP 2026-07-28 to Claude" · Spec: modelcontextprotocol.io/specification/2026-07-28 · Series: chris-at-tyler.github.io/presentations</p>
+  <aside class="notes">Close with the building question: "what internal thing do your agent sessions keep needing that they can't reach today?" — that's either a Tunnels use case or a weekend server. Q&A.</aside>
+</section>
+
+</div>
+</div>
+<script>
