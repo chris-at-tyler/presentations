@@ -15,6 +15,8 @@ from `main`; this repo is public — keep talk content public-safe).
 | 2026-07 | [Writing Great Skills](2026-07-writing-great-skills/)      | Tyler Tech lunch-and-learn (part 2) | ✅ skill makeover | Runbook in `DEMO.md` |
 | 2026-07 | [From Conversation to Tickets](2026-07-conversation-to-tickets/) | Tyler Tech lunch-and-learn (part 3) | ✅ spec → tickets | Runbook in `DEMO.md` |
 | 2026-07 | [The Karpathy Loop](2026-07-the-karpathy-loop/)            | Tyler Tech lunch-and-learn (part 4) | ✅ live loop | Runbook in `DEMO.md` |
+| 2026-07 | [Why the Model Eats the Harness](2026-07-logan-kilpatrick-model-eats-harness/) | Personal · video recap | — | Recap of a Logan Kilpatrick (Google DeepMind) interview; full transcript in `transcript.md` |
+| 2026-07 | [How We Scaled Kimi K2.5](2026-07-kimi-k2-5-scaling/) | Personal · video recap | — | Recap of Zhilin Yang's GTC 2026 keynote (Kimi AI); full transcript in `transcript.md` |
 
 ## Conventions
 
