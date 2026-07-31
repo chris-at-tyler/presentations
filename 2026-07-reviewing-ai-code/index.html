@@ -393,10 +393,17 @@ html, body { background: var(--bg); }
   <p style="margin-top:0.8em">So the most rigorous implementation of not reading code does not remove
   human reading. It <strong>relocates</strong> it — from the implementation to the specification — and
   documents that it has done so.</p>
-  <p class="small muted">Zhan's objection lands exactly here: the artefact Bob picked —
-  Gherkin/Cucumber executable specification — is a genre with a poor industry record, cited via the
-  vendors who built businesses on it and then abandoned it. Relocating trust onto a weak artefact
-  inherits the weakness.</p>
+  <p class="small muted">"But test code is <em>bigger</em> than production code — hasn't he just moved
+  the reading problem?" No: the boundary sits on the one artefact that doesn't scale with implementation
+  size. Gherkin grows with <em>features</em>; unit tests and mutation-generated tests grow with
+  <em>paths</em> and are never read. Bob, Feb 2026: <strong>"This grows the test suite and covers
+  virtually every path… an impressive constraint for the AI to try to cheat it's way out of."</strong>
+  Growth is the design.</p>
+  <p class="small muted">The real problem is one level up. A trust root must be <strong>small enough to
+  read AND complete enough to specify</strong> — and those diverge as the system grows, so the fraction
+  of behaviour any human sanctioned falls monotonically. It's also the only link with nothing behind it:
+  code is checked by tests, tests by mutation testing, the mutation tool is small — the spec is checked
+  by one person reading it. <strong>Judge a verification stack by its root, not its depth.</strong></p>
   <aside class="notes">If you take one thing away: any workflow claiming to have removed human
   judgement has hidden where it went. Find that artefact and you've found the real quality gate.</aside>
 </section>
@@ -578,9 +585,10 @@ html, body { background: var(--bg); }
       <tr class="tierD"><td class="who">D</td><td>all of C + adversarial review of the <em>design</em></td><td class="win">all of it, twice, by two people — buying traceability and operability, not defect detection</td><td>assume the change is wrong; design containment first</td></tr>
     </tbody>
   </table>
-  <p class="dnote" style="text-align:left">Middle column is the one the whole argument skipped. Tier C
-  reads interfaces because they <strong>constrain everything downstream</strong> — a small read with
-  large coverage.</p>
+  <p class="dnote" style="text-align:left">Middle column is the one the whole argument skipped. And the
+  heuristic underneath it: <strong>read what's expensive to reverse, not what's likely to be wrong.</strong>
+  Both camps argue about defect probability; the useful axis is decision half-life. An implementation bug
+  is a defect — an interface bug is a migration.</p>
   <aside class="notes">Tier C is where most professional work lives, and it explicitly does not require
   reading every line. That's the concession to the gauntlet school, and the evidence supports it.
   Note tier D reads everything while knowing full reading is a poor bug detector — because there you're
