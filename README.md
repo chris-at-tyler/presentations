@@ -20,6 +20,7 @@ from `main`; this repo is public — keep talk content public-safe).
 | 2026-07 | [Should Humans Review All AI-Generated Code?](2026-07-reviewing-ai-code/) | Personal · debate recap | — | The July 2026 code-review split — 10 positions, 17 sources; full research wiki lives in the `second-brain` vault under `research/ai-code-review-debate/` |
 | 2026-08 | [The New Rules of Context Engineering](2026-08-new-rules-of-context/) | Tyler Tech lunch-and-learn (part 5) | — | claude.com blog recap, ~5–10 min |
 | 2026-08 | [MCP Goes Stateless](2026-08-mcp-goes-stateless/)          | Tyler Tech lunch-and-learn (part 6) | — | claude.com blog recap, ~5–10 min |
+| 2026-08 | [What Still Needs a Harness?](2026-08-what-still-needs-a-harness/) | Tyler Tech lunch-and-learn (part 7) | ✅ skill demotion | Runbook in `DEMO.md`; research wiki in the `second-brain` vault under `research/what-still-needs-a-harness/` |
 
 ## Conventions
 

@@ -1,0 +1,434 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">Lunch &amp; Learn · Part 7</div>
+    <h1>What Still Needs a Harness?</h1>
+    <p class="subtitle">The model is eating the harness. A field guide to what it can't digest —
+    and what was never its food.</p>
+    <p class="credit">Logan Kilpatrick (Sequoia, Jun 2026) · Anthropic, "The New Rules of Context
+    Engineering" (Jul 2026) · Sutton, "The Bitter Lesson" (2019)<br>
+    Builds on part 2 (writing great skills) and parts 5–6 (context rules, MCP) · 2026-08</p>
+  </div>
+  <aside class="notes">Frame the stakes in one line: half the room is writing skills and plugins,
+  and the labs just told us they're deleting theirs. The talk answers three questions — what a
+  harness is, what belongs in one, and what should have been a script all along. The punchline
+  demo finishes part 2's makeover.</aside>
+</section>
+
+<!-- 2 · The claim -->
+<section>
+  <div class="kicker">Act 1 · The Eating</div>
+  <h2>"The model eats the scaffolding"</h2>
+  <div class="bigquote">
+    "The scaffolding is oftentimes a couple of steps ahead of what is baked directly into the
+    model. And then what ends up happening is the model eats that scaffolding and it becomes part
+    of the native model system."
+    <span class="attr">— Logan Kilpatrick, Google DeepMind (Sequoia Capital interview, Jun 2026)</span>
+  </div>
+  <ul>
+    <li>"What we have historically thought of as the model is <strong>not just the weights
+    anymore</strong> — it's an entire expanding, sprawling system built around them."</li>
+    <li>The forecast, with a date: everyone says <em>the harness is where the alpha is</em> —
+    "that perhaps won't be true… <strong>in 12 months</strong>. It'll be upstreamed into the
+    model."</li>
+  </ul>
+  <aside class="notes">Recap slide for anyone who missed the video-recap deck. Point out he gives
+  a timeline — 12 months — which makes this checkable, not vibes. Hold the question "eats WHAT
+  exactly?" — that's slide 4.</aside>
+</section>
+
+<!-- 3 · The evidence -->
+<section>
+  <div class="kicker">Act 1 · The Eating</div>
+  <h2>Then Anthropic published the receipts</h2>
+  <div class="stats">
+    <div class="stat">
+      <span class="num">−80%</span>
+      <span class="lbl">of Claude Code's system prompt removed for Opus 5 / Fable 5 — "with no
+      measurable loss on our coding evaluations"</span>
+    </div>
+    <div class="stat teal">
+      <span class="num">vision-only</span>
+      <span class="lbl">Fable 5 beat Pokémon FireRed with a minimal harness — earlier models
+      failed <em>with</em> extra tools and navigation aids</span>
+    </div>
+    <div class="stat coral">
+      <span class="num">examples ⇒ cages</span>
+      <span class="lbl">"giving examples actually constrains them to a certain exploration
+      space" — the fix for old models became a limiter on new ones</span>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:0.8em">The deleted lines were rules like <em>"default
+  to writing no comments. Never write multi-paragraph docstrings…"</em> — replaced by one line:
+  <em>"write code that reads like the surrounding code."</em></p>
+  <aside class="notes">The third tile is the counterintuitive one — worked examples, the #1 old
+  best practice, now measurably hurt. The eating isn't just "you may delete your guardrails" —
+  it's "your guardrails have started to cost you." That asymmetry is what makes this urgent
+  rather than optional housekeeping.</aside>
+</section>
+
+<!-- 4 · Four layers -->
+<section>
+  <div class="kicker">Act 1 · The Eating</div>
+  <h2>"Harness" is four things — only one is food</h2>
+  <table class="tbl">
+    <thead><tr><th>Layer</th><th>What it is</th><th>Why it exists</th><th>Fate</th></tr></thead>
+    <tbody>
+      <tr><td class="who">Actuation</td><td>tools, sandbox, the agentic loop</td>
+        <td>the model has no hands without it</td><td class="win">never eaten</td></tr>
+      <tr><td class="who">Orchestration</td><td>prompt chains, forced workflows, "MUST do X then Y"</td>
+        <td>compensates for model <em>unreliability</em></td><td class="gap">eaten</td></tr>
+      <tr><td class="who">Context</td><td>CLAUDE.md, skills, memory, MCP</td>
+        <td>supplies what the model <em>cannot know</em></td><td class="win">changes form, never dies</td></tr>
+      <tr><td class="who">Governance</td><td>permissions, gates, audit, cost controls</td>
+        <td>humans deciding what it <em>may</em> do</td><td class="win">never eaten</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted" style="margin-top:0.8em">Kilpatrick exempts the survivors himself:
+  search and code execution keep "value in having the external scaffolding." Google predicts
+  harness commoditization <em>while</em> rebasing every product onto one harness — different
+  layers of the same word.</p>
+  <aside class="notes">This is the talk's central slide. The slogan is true and under-specified —
+  the layer split makes it predictive instead of vibes. Walk the fates column slowly. The
+  apparent Google contradiction (eats the harness / bets everything on Antigravity) dissolves
+  here: the prediction is about orchestration, the strategy is actuation plus governance.</aside>
+</section>
+
+<!-- 5 · The mechanism -->
+<section>
+  <div class="kicker">Act 1 · The Eating</div>
+  <h2>Why the middle, specifically</h2>
+  <div class="bigquote">
+    Capability gaps get trained away.<br>Information gaps cannot be.
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3>Trainable → temporary</h3>
+      <p class="lead">"The model should have behaved differently"</p>
+      <p>Every behavior-correcting rule is a labeled failure mode — exactly what RL on agentic
+      traces consumes. Once trained in, the rule is dead weight; a generation later, a cage.</p>
+    </div>
+    <div class="card">
+      <h3>Untrainable → permanent</h3>
+      <p class="lead">"The model couldn't have known that"</p>
+      <p>No training run learns which library you banned last quarter, why the deploy freezes on
+      Fridays, or what <em>you</em> mean by "clean." It has to be told. Forever.</p>
+    </div>
+  </div>
+  <aside class="notes">The one-liner is the take-home sentence — if the room remembers one thing,
+  this is it. Mechanism in one breath: your harness text and the vendor's training loop compete
+  to fix the same failures, and the training loop compounds. That's why the eating is inevitable,
+  not incidental.</aside>
+</section>
+
+<!-- 6 · Bitter Lesson -->
+<section>
+  <div class="kicker">Act 1 · The Eating</div>
+  <h2>Sutton predicted it in 2019 — and drew the boundary</h2>
+  <div class="bigquote">
+    "We want AI agents that can discover like we can, not which contain what we have discovered."
+    <span class="attr">— Rich Sutton, The Bitter Lesson (2019)</span>
+  </div>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Hands</strong> <span class="why">— actuation is physics; no gradient grows a filesystem</span></li>
+    <li><span class="n">2</span><strong>Information asymmetry</strong> <span class="why">— your private context isn't in the world's data at any compute budget</span></li>
+    <li><span class="n">3</span><strong>Authority</strong> <span class="why">— compute optimizes toward an objective; it doesn't pick one</span></li>
+    <li><span class="n">4</span><strong>Accountability</strong> <span class="why">— a guarantee is a property of a mechanism, not a skill level</span></li>
+    <li><span class="n">5</span><strong>Economics</strong> <span class="why">— a script's marginal run is free; inference never is</span></li>
+  </ul>
+  <aside class="notes">Hand-coded harness structure is exactly Sutton's "building in how we think
+  we think" — helps short-term, satisfying, loses to training. But the essay's own last line
+  concedes the limit: discovery reaches what's in the world; these five aren't. This is the
+  theory floor under slide 5's one-liner. Note item 3 vs preferences: memory systems DO learn
+  your taste over time — what they never absorb is that the call stays yours and can change on a
+  whim. Content: slowly eaten. Authority: never.</aside>
+</section>
+
+<!-- 7 · Test 1 -->
+<section>
+  <div class="kicker">Act 2 · Three Tests</div>
+  <h2>Test 1 — Can you write the exact rule?</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Then it's a script</h3>
+      <p class="lead">Cheaper, faster — and <em>more accurate</em>.</p>
+      <p>A program's failure modes are enumerable. A model's aren't. An LLM at runtime doing a
+      deterministic task is paying inference prices for a lookup table.</p>
+    </div>
+    <div class="card">
+      <h3>The model is the mechanic, not the engine</h3>
+      <p class="lead">AI at <em>authoring</em> time and <em>repair</em> time — never run time.</p>
+      <p>Have the model write the script once, and fix the edge case that breaks it. Then the
+      script runs forever, for free, the same way every time.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:0.8em">The mistake this catches: wrapping regex-shaped
+  work in a skill. The eating thesis doesn't excuse it — script-shaped work was never the
+  model's to eat.</p>
+  <aside class="notes">This is the complaint that seeded the whole talk: people wrapping basic
+  script work in skills and plugins because AI is the hammer in hand. Name it kindly — everyone
+  in the room has done it, including me. The mechanic/engine line is the memorable half.</aside>
+</section>
+
+<!-- 8 · Test 2 -->
+<section>
+  <div class="kicker">Act 2 · Three Tests</div>
+  <h2>Test 2 — Does it need judgment? Then check <em>reach</em></h2>
+  <div class="diagram">
+    <div class="dbox">needs judgment<br><span class="dnote">→ an agent runs it</span></div>
+    <div class="arrow">→</div>
+    <div class="dbox">context <strong>reachable</strong>?<br><span class="dnote">repo · fetchable docs · MCP</span></div>
+    <div class="arrow">→</div>
+    <div class="dbox"><strong>yes:</strong> bare agent<br><span class="dnote"><strong>no:</strong> that's what a skill is for</span></div>
+  </div>
+  <ul>
+    <li>Not "is it tokenizable" — almost everything is. The question is whether the agent can
+    <strong>get to it</strong> without being handed it.</li>
+    <li>Every MCP connection shrinks skill territory: wire up the ticket system and "what the
+    ticket requires" stops needing a skill.</li>
+    <li>The permanent residue: <strong>never-written knowledge</strong> (the <em>why</em> behind a
+    convention, what the last outage taught) and <strong>taste</strong>.</li>
+  </ul>
+  <p class="small muted" style="margin-top:0.6em">Anthropic's version: <em>"Avoid stating 'the
+  obvious' things Claude should know by looking at your file system or your repo… spend most of
+  the tokens on gotchas."</em></p>
+  <aside class="notes">Reachability is an engineering variable that moves one direction — so
+  context files need re-auditing the same way skills do, and the question is never "is this
+  true?" but "can the agent now reach this without me?" Prefer connecting to copying: a pointer
+  outlives a paste.</aside>
+</section>
+
+<!-- 9 · Test 3 -->
+<section>
+  <div class="kicker">Act 2 · Three Tests</div>
+  <h2>Test 3 — Does it need a <em>guarantee</em>?</h2>
+  <div class="bigquote">
+    Probabilistic asymptotes toward 100%.<br>It never reaches <em>auditable</em>.
+  </div>
+  <ul>
+    <li>CI gates, billing, security policy, compliance: the requirement isn't a high success
+    rate — it's <strong>determinism, reproducibility, audit</strong>. Properties of a mechanism,
+    not a skill level.</li>
+    <li>A task the model does at 99.5% still belongs to a program when someone has to
+    <em>prove</em> what happened.</li>
+    <li>This is why the eating has a floor: a perfect model doesn't convert a gate into a
+    judgment call — the gate's <em>point</em> is that nobody exercises judgment there.</li>
+  </ul>
+  <aside class="notes">The test people skip, because it doesn't feel like a capability question —
+  it isn't one. Ask the room: would you accept "the model almost never approves a bad invoice"?
+  The answer being obviously no IS the test. Governance and guarantees are the layers that
+  thicken while orchestration thins.</aside>
+</section>
+
+<!-- 10 · Messy tail + bidirectional -->
+<section>
+  <div class="kicker">Act 2 · Three Tests</div>
+  <h2>The messy tail — and the eating that runs backwards</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Deterministic core, AI escape hatch</h3>
+      <p class="lead">For the 95%-rule-writable task with an endless tail.</p>
+      <p>The script handles the head of the distribution; the agent handles the tail; every tail
+      case the agent solves is a candidate for <strong>promotion into the script</strong>. The
+      boundary ratchets toward code.</p>
+    </div>
+    <div class="card">
+      <h3>Scripts are eating back</h3>
+      <p class="lead">2023–24 ran the mistake in reverse.</p>
+      <p>Novelty pushed deterministic work <em>into</em> LLMs. The correction is symmetric: the
+      model eats the orchestration <strong>middle</strong>, scripts reclaim the deterministic
+      <strong>bottom</strong> — what stays custom is thin, declarative, and yours.</p>
+    </div>
+  </div>
+  <aside class="notes">The escape-hatch pattern keeps the framework from reading as rigid — most
+  real tasks straddle. The promotion loop is the practical habit: every time the fallback fires
+  and succeeds, ask whether that case can move into the script. Equilibrium sentence sets up
+  Act 3: what remains custom is thin, declarative, specific to you — which is exactly what a
+  skill should now be.</aside>
+</section>
+
+<!-- 11 · Two species of skills -->
+<section>
+  <div class="kicker">Act 3 · The Skills Consequence</div>
+  <h2>Two species of skills, opposite fates</h2>
+  <table class="tbl">
+    <thead><tr><th></th><th>Process skills</th><th>Knowledge skills</th></tr></thead>
+    <tbody>
+      <tr><td class="who">Form</td><td>"follow these steps" · "you MUST" · all-caps enforcement</td>
+        <td>facts, stated declaratively: <em>the registry lives at X · we ban library Y since the
+        incident · our OIDC apps use PKCE, no secret</em></td></tr>
+      <tr><td class="who">What it really is</td><td class="gap">orchestration in a skill costume</td>
+        <td class="win">unreachable context, hand-carried</td></tr>
+      <tr><td class="who">Fate</td><td class="gap">eaten — each model generation devalues it, then it goes negative</td>
+        <td class="win">survives every model generation</td></tr>
+    </tbody>
+  </table>
+  <div class="bigquote" style="margin-top:0.7em">
+    A skill full of MUSTs is a bet against the model.<br>A skill full of facts is a gift to it.
+  </div>
+  <aside class="notes">Anthropic says the survival criterion first-party: "It's best when skills
+  encode particular opinions, knowledge, or best practices that are particular to you, your
+  team, or product." The trajectory: imperative → declarative. A MUST that deserves to live is
+  governance — a hard guardrail — and belongs to the permanent layers, not to process prose.
+  Prune steps first; they age fastest.</aside>
+</section>
+
+<!-- 12 · Receipts -->
+<section>
+  <div class="kicker">Act 3 · The Skills Consequence</div>
+  <h2>Receipts from my own fleet</h2>
+  <div class="stats">
+    <div class="stat">
+      <span class="num">93 → 54</span>
+      <span class="lbl">installed skills after a July audit — all 93 were model-invoked, sitting
+      in the window every turn</span>
+    </div>
+    <div class="stat coral">
+      <span class="num">~15</span>
+      <span class="lbl">skills ever actually invoked, measured across 60 days of full session
+      transcripts</span>
+    </div>
+    <div class="stat teal">
+      <span class="num">~2.8k</span>
+      <span class="lbl">description tokens saved per turn — every turn, in every session, since</span>
+    </div>
+  </div>
+  <ul style="margin-top:0.8em">
+    <li>What died was overwhelmingly <strong>process</strong> — restatements of what the model
+    already does by default.</li>
+    <li>What survived is the <strong>knowledge fleet</strong>: infrastructure facts, org gotchas,
+    domain reference.</li>
+    <li>The instrument — the sentence-level <em>no-op test</em> ("does this line change behavior
+    vs the default?") — is <strong>model-relative</strong>: lines that passed last year fail
+    after the next release. The eating, one sentence at a time.</li>
+  </ul>
+  <aside class="notes">Personal data, not a benchmark — say so. The 15/93 number lands hardest:
+  five of every six descriptions were pure context tax. Challenge for the room: the no-op test
+  needs re-running after every model upgrade, and the imperative sentences are where to start.</aside>
+</section>
+
+<!-- 13 · The field disagrees -->
+<section>
+  <div class="kicker">Act 3 · The Skills Consequence</div>
+  <h2>Even the official guidance is fighting about this</h2>
+  <table class="tbl">
+    <thead><tr><th>Source (all in Anthropic's official plugin marketplace)</th><th>Its position on MUST-style enforcement</th></tr></thead>
+    <tbody>
+      <tr><td class="who">skill-creator</td><td class="win">"oppressively constrictive MUSTs"… all-caps ALWAYS/NEVER is a
+        <strong>yellow flag</strong> — explain the why instead</td></tr>
+      <tr><td class="who">superpowers</td><td class="win">recipes beat prohibitions in head-to-head wording tests — and its own
+        meta-skill still screams <em>"YOU MUST… this is not negotiable"</em></td></tr>
+      <tr><td class="who">plugin-dev</td><td class="gap">mandates imperative verb-first prose <strong>everywhere</strong></td></tr>
+      <tr><td class="who">bundled best-practices doc</td><td class="gap">recommends escalating "always" → <strong>"MUST"</strong> when ignored</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted" style="margin-top:0.8em">The framework's verdict: they're arguing about a
+  depreciating asset. Coercion is a bet against the model that each generation devalues — what
+  survives pruning is a recipe, an explained why, or a genuine governance guardrail.</p>
+  <aside class="notes">The spicy slide — keep it fun, not smug. The superpowers row is the
+  punchline: the plugin whose own docs prove recipes beat prohibitions ships the loudest
+  prohibition on the machine. These sources contradict because they're all patching model
+  behavior at different capability snapshots — which is the thesis, observed in the wild.</aside>
+</section>
+
+<!-- 14 · Demo intro -->
+<section>
+  <div class="kicker amber">Live Demo</div>
+  <h2>Let's finish part 2's makeover</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Part 2 (July)</h3>
+      <p class="lead">34 lines → 9.</p>
+      <p>We took a diseased <code>commit-helper</code> skill and made it <em>well-written</em>:
+      one trigger, one source of truth, positive phrasing, a checkable completion criterion.</p>
+    </div>
+    <div class="card">
+      <h3>Part 7 (today)</h3>
+      <p class="lead">9 lines → ?</p>
+      <p>Part 2 asked <em>"is this skill well-written?"</em> Today we ask the question that comes
+      first: <strong>should it exist?</strong> — the three tests, applied line by line.</p>
+    </div>
+  </div>
+  <div class="prompt" style="margin-top:0.8em">
+    <span class="plabel">The prompt</span>
+    Read existence-test.md, then apply it to .claude/skills/commit-helper/SKILL.md line by line:
+    which lines are a program, which are judgment the model already has, which are knowledge it
+    couldn't know? Extract anything deterministic into a git hook. Tell me what's left.
+  </div>
+  <aside class="notes">SWITCH TO TERMINAL — pre-flight in DEMO.md (sandbox copied to /tmp with
+  its own git repo and a staged change). Narrate while it runs: the skill it's dissecting is the
+  GOOD version — the one part 2 was proud of. Interrupt prediction from the room: what do they
+  think survives? Timing ~5 minutes; fallback is the next slide.</aside>
+</section>
+
+<!-- 15 · Fallback: the demotion -->
+<section>
+  <div class="kicker amber">The Demotion (What A Run Finds)</div>
+  <h2>34 → 9 → 0 — plus one hook that never misses</h2>
+  <div class="cols">
+    <div style="flex: 1.2;">
+      <div class="file">
+        <div class="fname">.claude/skills/commit-helper/SKILL.md — the existence test, applied</div>
+        <pre><span class="dim">1. Run `git diff --staged`, read every hunk.</span>   <span class="good">← judgment the model brings unprompted</span>
+<span class="bad">2. …imperative subject ≤ 50 characters;
+   body wrapped at 72.</span>                 <span class="good">← a writable rule — that's a PROGRAM</span>
+<span class="dim">3. Done when every functional change is
+   named in the message.</span>               <span class="good">← trained-in convention: a no-op</span></pre>
+      </div>
+      <div class="file" style="margin-top:0.6em">
+        <div class="fname">.git/hooks/commit-msg — where rule ② actually belongs</div>
+        <pre>subject=$(head -1 "$1")
+[ ${#subject} -le 50 ] || { echo "subject > 50 chars"; exit 1; }</pre>
+      </div>
+    </div>
+    <div>
+      <ul class="principles">
+        <li><span class="n">①</span><strong>Judgment</strong> — already the model's; saying it changes nothing</li>
+        <li><span class="n">②</span><strong>Exact rule</strong> — enforce it in a hook: deterministic, free, unskippable</li>
+        <li><span class="n">③</span><strong>Universal standard</strong> — trained in; restating it is a no-op</li>
+        <li><span class="n">→</span><strong>Knowledge residue: empty.</strong> The skill dissolves. Were there a real house rule — a ticket-prefix format, a sign-off trailer — <em>that</em> two-line fact would be the whole skill.</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">Fallback if live stalls; otherwise show as recap. The arc lands here:
+  part 2 made it well-written, the existence test makes it disappear — and nothing of value was
+  lost. A well-written skill can still be a skill that shouldn't exist. The hook enforces at 100%
+  what the prose requested at maybe-95%.</aside>
+</section>
+
+<!-- 16 · Wrap -->
+<section>
+  <div class="kicker amber">Wrap Up</div>
+  <h2>Takeaways</h2>
+  <ul class="takeaways">
+    <li><strong>The harness is eaten only in the middle.</strong> Sort by layer, not by slogan:
+    hands, context, and governance stay; orchestration is food.
+      <span class="sub">Capability gaps get trained away; information gaps cannot be.</span></li>
+    <li><strong>Three tests before you build.</strong> Exact rule → script (the model authors and
+    repairs it — mechanic, not engine). Judgment → agent, fed only what it can't reach.
+    Guarantee → program, at any model quality.
+      <span class="sub">Messy tail? Deterministic core, AI escape hatch, promote the wins.</span></li>
+    <li><strong>Write skills as facts, not steps.</strong> MUSTs depreciate with every model
+    release; unreachable knowledge never does.
+      <span class="sub">A skill full of MUSTs is a bet against the model; a skill full of facts is a gift to it.</span></li>
+  </ul>
+  <p style="margin-top: 1em">This afternoon: run the <strong>existence test</strong> on one skill
+  or automation you own — and the no-op test on whatever survives.</p>
+  <p class="credit">Part 2: chris-at-tyler.github.io/presentations/2026-07-writing-great-skills ·
+  Sources: Sequoia/Kilpatrick interview · claude.com blog (Jul 24, 2026) · incompleteideas.net</p>
+  <aside class="notes">Close on the challenge — it's the same closing move as part 2 (no-op test
+  on your CLAUDE.md), one level up: not "is it well-written" but "should it exist." Q&amp;A. If
+  asked "so are skills dead?": no — the knowledge species is the durable half, and it's exactly
+  what Anthropic says skills are for.</aside>
+</section>
+
+</div>
+</div>
+<script>
