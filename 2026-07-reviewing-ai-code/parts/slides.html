@@ -1,0 +1,411 @@
+
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 · Title -->
+<section>
+  <div class="center-v">
+    <div class="kicker">July 2026 · The Code Review Split</div>
+    <h1>Should humans review all AI-generated code?</h1>
+    <p class="subtitle">It looked like a binary. Everyone arguing had already stopped reading the
+    code — and started reading something else instead.</p>
+    <p class="credit">Primary sources: Martin · Hashimoto · Booch · Sridharan · Lemmer-Webber ·
+    Glyph · Ronacher · Browne · Willison · Zhan<br>
+    Evidence: Yee &amp; Wagner 2007 · METR 2025 · Veracode Spring 2026 · 2026-07-31</p>
+  </div>
+  <aside class="notes">The claim of this talk is not that one side won. It's that the question as
+  posed is unanswerable, and that the thing everyone actually changed was which artefact carries
+  their trust. Four acts: how it happened, the reframe, the evidence, what to do.</aside>
+</section>
+
+<!-- 2 · How it happened -->
+<section>
+  <div class="kicker">Act 1 · The Split</div>
+  <h2>Three words, then 4.8 million views</h2>
+  <div class="timeline">
+    <div class="phase pre">
+      <h3>Jul 3</h3>
+      <ul>
+        <li><strong>Mitchell Hashimoto</strong></li>
+        <li>"I read the code"</li>
+        <li>~830k views</li>
+        <li class="star">Read as a rebuke to vibe coding</li>
+      </ul>
+    </div>
+    <div class="phase dur">
+      <h3>~Jul 23</h3>
+      <ul>
+        <li><strong>Robert C. Martin</strong></li>
+        <li>replying to a dev who asked if wanting to understand his own code was old-fashioned</li>
+        <li>~4.8M views</li>
+        <li class="star">"not read any of the code written by my agents"</li>
+      </ul>
+    </div>
+    <div class="phase post">
+      <h3>Already in flight</h3>
+      <ul>
+        <li>Ronacher — <em>The Tower Keeps Rising</em></li>
+        <li>Lemmer-Webber — <em>Faulty Towers</em></li>
+        <li class="star">Glyph — <em>What Is Code Review For?</em> (March — four months early)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:0.8em">Sourcing note: x.com blocks automated fetching, so
+  every tweet here is secondhand. Martin's central quote is corroborated by two independent
+  transcriptions citing the same post id. View counts are approximate.</p>
+  <aside class="notes">Note the asymmetry — the "don't read" post got roughly six times the reach.
+  Also note Glyph had already dissolved the question in March, before either post. The debate
+  rediscovered a settled argument.</aside>
+</section>
+
+<!-- 3 · The apparent binary -->
+<section>
+  <div class="kicker">Act 1 · The Split</div>
+  <h2>Ten positions, not two</h2>
+  <div class="cols">
+    <div>
+      <p class="lead"><span class="chip teal">Read</span></p>
+      <ul class="principles">
+        <li><span class="n">·</span><strong>Hashimoto</strong> — reads every line, for Ghostty
+          <span class="why">but his own writing is all verification loops</span></li>
+        <li><span class="n">·</span><strong>Booch</strong> — reviews everything; metrics give
+          "no confidence whatsoever" about vulnerabilities and dead code</li>
+        <li><span class="n">·</span><strong>Sridharan</strong> — can't debug it → don't own it → not
+          a trustworthy vendor <span class="why">reported, not verified</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="lead"><span class="chip amber">Don't read</span></p>
+      <ul class="principles">
+        <li><span class="n">·</span><strong>Uncle Bob</strong> — the gauntlet: tests, Gherkin, QA
+          procedures, metrics, mutation testing</li>
+        <li><span class="n">·</span><strong>Willison</strong> — proof over reading: red-green TDD,
+          runtime probes, conformance suites</li>
+        <li><span class="n">·</span><strong>Browne</strong> — "you're reading way too much code"</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small" style="margin-top:0.5em"><span class="chip violet">Wrong question</span>
+  <strong>Glyph</strong> — review was never a bug-finder; it's a social process ·
+  <strong>Ronacher</strong> — friction synchronised people · <strong>Lemmer-Webber</strong> — you
+  will drift whatever you intend · <strong>Zhan</strong> — right idea, wrong artefact</p>
+  <aside class="notes">Ronacher explicitly disclaims the pro-review reading — he says the piece is
+  "primarily an observation". Don't recruit him. Sridharan's wording comes from one secondary
+  source, so I flag it every time I use it.</aside>
+</section>
+
+<!-- 4 · Not actually opposed -->
+<section>
+  <div class="kicker">Act 1 · The Split</div>
+  <h2>The two famous opposites aren't opposed</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Uncle Bob, read closely</h3>
+      <p class="lead">"My agents write the unit tests. I don't review those. They also write the
+      gherkin acceptance tests and the QA procedures. <strong>I review those.</strong>"</p>
+      <p>Plus: periodic manual testing, audit-or-spot-check by criticality, hard caps on complexity
+      because "messy code slows my agents down".</p>
+    </div>
+    <div class="card">
+      <h3>Hashimoto, read closely</h3>
+      <p class="lead">Reads every line <strong>for Ghostty</strong> — where he's the accountable
+      maintainer of a performance-critical terminal.</p>
+      <p>His own three principles are about splitting sessions and giving agents a way to verify
+      their work. That's a tier judgement, not a universal rule.</p>
+    </div>
+  </div>
+  <p class="dnote" style="text-align:left">Both are verification-first. Both scale scrutiny to stakes.
+  They are two points on one spectrum that got framed as two camps.</p>
+  <aside class="notes">This is the first crack in the binary. If you only read the headlines you'd
+  never know Bob reads anything at all.</aside>
+</section>
+
+<!-- 5 · THE FINDING -->
+<section>
+  <div class="kicker amber">Act 2 · The Reframe</div>
+  <h2>Nobody stopped reading</h2>
+  <table class="tbl">
+    <thead><tr><th>Who</th><th>What they read instead of the code</th></tr></thead>
+    <tbody>
+      <tr><td class="who">Uncle Bob</td><td>Gherkin acceptance tests + QA procedures — "I review those"</td></tr>
+      <tr><td class="who">old-coder skill</td><td>a human-approved <strong>SPEC</strong> before code, an <strong>EVIDENCE</strong> report after — "the single yes/no you give"</td></tr>
+      <tr><td class="who">Theo Browne</td><td>every API signature, type and schema — <strong>~1,000 lines/day, unchanged</strong></td></tr>
+      <tr><td class="who">Willison</td><td>agent-generated walkthroughs + live test and runtime output</td></tr>
+      <tr><td class="who">Hashimoto, Booch</td><td>the code itself</td></tr>
+    </tbody>
+  </table>
+  <p class="dnote" style="text-align:left">Four independent relocations of human attention — by people
+  who believe they disagree with each other.</p>
+  <aside class="notes">This is the talk's central slide. The debate was never read versus don't-read.
+  It's: which artefact can carry a human's trust? That question is answerable per artefact, which is
+  why it's a better one. Browne is the punchline — his headline says read less, and his reading volume
+  never changed.</aside>
+</section>
+
+<!-- 6 · The concession -->
+<section>
+  <div class="kicker amber">Act 2 · The Reframe</div>
+  <h2>The gauntlet school says so itself</h2>
+  <div class="bigquote">
+    "The gauntlet proves the code meets the spec — it cannot prove the spec covers everything that
+    matters. <strong>That's why the spec goes to you.</strong>"
+    <span class="attr">— old-coder, the skill that productised "don't read the code"</span>
+  </div>
+  <p style="margin-top:0.8em">So the most rigorous implementation of not reading code does not remove
+  human reading. It <strong>relocates</strong> it — from the implementation to the specification — and
+  documents that it has done so.</p>
+  <p class="small muted">Zhan's objection lands exactly here: the artefact Bob picked —
+  Gherkin/Cucumber executable specification — is a genre with a poor industry record, cited via the
+  vendors who built businesses on it and then abandoned it. Relocating trust onto a weak artefact
+  inherits the weakness.</p>
+  <aside class="notes">If you take one thing away: any workflow claiming to have removed human
+  judgement has hidden where it went. Find that artefact and you've found the real quality gate.</aside>
+</section>
+
+<!-- 7 · Four jobs -->
+<section>
+  <div class="kicker violet">Act 2 · The Reframe</div>
+  <h2>"Review" is one word for four jobs</h2>
+  <div class="matrix">
+    <div class="q kk"><span class="tag">Solved</span><h3>1 · Bug-finding</h3>
+      <p>Does it do the wrong thing? Humans were always bad at this — and it long predates AI.</p></div>
+    <div class="q uu"><h3>2 · Absence of badness</h3>
+      <p>Vulnerabilities, dead code, missed factorisations, quiet dependencies. You cannot test for a
+      case you never imagined.</p></div>
+    <div class="q ku"><h3>3 · Operability</h3>
+      <p>Can you debug it at 3am? Only reading is known to build the model you need under pressure.</p></div>
+    <div class="q uk"><span class="tag">No mechanism</span><h3>4 · Shared understanding</h3>
+      <p>Acculturation, norms, a synchronised model of the system. Review's real product — and you
+      cannot acculturate a model.</p></div>
+  </div>
+  <p class="dnote" style="text-align:left">The decomposition is Glyph's. Once you split them, the
+  headline question dissolves: each job has a different mechanism and a different degree of
+  solvedness.</p>
+  <aside class="notes">Bob and Booch aren't disagreeing about one question — Bob is optimising job 1,
+  Booch is defending job 2. Everyone assumes the other three come along for free.</aside>
+</section>
+
+<!-- 8 · Scoring -->
+<section>
+  <div class="kicker violet">Act 2 · The Reframe</div>
+  <h2>Score each job honestly</h2>
+  <table class="tbl">
+    <thead><tr><th>Job</th><th>Human reading</th><th>Gauntlet / tests</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td class="who">Bug-finding</td><td class="weak">weak — ~5 lines/reviewer-hour adversarial</td><td class="win">strong</td><td class="win">automation wins</td></tr>
+      <tr><td class="who">Absence of badness</td><td class="weak">weak</td><td class="weak">weak on security</td><td class="gap">unsolved</td></tr>
+      <tr><td class="who">Operability</td><td class="win">the only known mechanism</td><td class="weak">none</td><td class="gap">unsolved at volume</td></tr>
+      <tr><td class="who">Shared understanding</td><td class="win">the only known mechanism</td><td class="weak">none</td><td class="gap">no mechanism at all</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:0.7em">Bug-finding is being automated — which is why "stop reading" feels
+  obviously right. <strong>From inside job 1, it is.</strong> The other three are where the argument
+  should have been.</p>
+  <aside class="notes">And note the shape of the risk: jobs 3 and 4 degrade without emitting a signal.
+  Bugs page you. Vulnerabilities eventually surface. A codebase nobody understands announces itself
+  once, late, as an unavoidable rewrite.</aside>
+</section>
+
+<!-- 9 · Yee -->
+<section>
+  <div class="kicker teal">Act 3 · The Evidence</div>
+  <h2>Humans can't find bugs by reading — measured in 2007</h2>
+  <div class="stats">
+    <div class="stat"><span class="num">100</span><span class="lbl">lines of Python, one file — and reviewers were <strong>told where to look</strong></span></div>
+    <div class="stat"><span class="num">3</span><span class="lbl">exploitable bugs planted: easy, medium, hard</span></div>
+    <div class="stat coral"><span class="num">20 h</span><span class="lbl">reviewer-hours spent by security researchers</span></div>
+    <div class="stat coral"><span class="num">1 / 3</span><span class="lbl">found reliably. The "hard" bug: <strong>never found by anyone</strong></span></div>
+  </div>
+  <p style="margin-top:0.9em">Yee &amp; Wagner, <em>Building Reliable Voting Machine Software</em>
+  (Berkeley PhD, 2007). Best-case conditions for review: tiny surface, known location, expert
+  adversarial readers, ample time. <strong>~5 lines per reviewer-hour.</strong></p>
+  <div class="prompt"><span class="plabel">The detail the debate always omits</span>
+  The "medium" bug that a paired team of security experts <em>missed</em> — Yee's own parenthetical:
+  "(Note that this bug could be caught by a static type checker.)"</div>
+  <aside class="notes">Both camps cite this study. Lemmer-Webber uses it to argue humans can't keep up
+  with LLM volume — correct. But the same page argues that tooling catches what humans don't, which is
+  the gauntlet's claim. The study supports both wings. It settles only that unaided human reading is a
+  weak detector.</aside>
+</section>
+
+<!-- 10 · Veracode -->
+<section>
+  <div class="kicker teal">Act 3 · The Evidence</div>
+  <h2>The axis that improved isn't the axis that matters</h2>
+  <div class="stats">
+    <div class="stat teal"><span class="num">50 → 95%</span><span class="lbl">syntax / functional pass rate, 2023 → 2026</span></div>
+    <div class="stat coral"><span class="num">45–55%</span><span class="lbl">security pass rate — <strong>flat across every model generation and size</strong></span></div>
+    <div class="stat coral"><span class="num">29%</span><span class="lbl">security pass rate for Java, the worst performer</span></div>
+  </div>
+  <div class="bigquote" style="margin-top:1em">
+    "Models have become excellent at writing code that compiles. They've failed at writing code
+    that's safe."
+    <span class="attr">— Veracode, Spring 2026 GenAI Code Security update</span>
+  </div>
+  <p class="small muted">Veracode sells security scanning, so treat the levels as interested. The flat
+  trend measured with a constant battery across generations is the load-bearing part — harder to
+  manufacture than a level claim.</p>
+  <aside class="notes">This is why it matters: the stated reason people read less is "as the agents get
+  more reliable." That premise is true on the axis you notice — it compiles, it passes, it works — and
+  flat on the axis you don't. The signal driving the behaviour change and the signal that should
+  govern it have decoupled. That's the condition where drift feels earned and isn't.</aside>
+</section>
+
+<!-- 11 · METR -->
+<section>
+  <div class="kicker teal">Act 3 · The Evidence</div>
+  <h2>And you can't tell how it's going</h2>
+  <div class="stats">
+    <div class="stat"><span class="num">+24%</span><span class="lbl">speedup developers <em>forecast</em> before the trial</span></div>
+    <div class="stat coral"><span class="num">−19%</span><span class="lbl">actual: they were <strong>slower</strong> with AI tools</span></div>
+    <div class="stat"><span class="num">+20%</span><span class="lbl">speedup they <em>still believed</em> afterwards</span></div>
+  </div>
+  <p style="margin-top:0.9em">METR randomised controlled trial: 16 experienced developers, their own
+  repositories, 246 completed issues. A <strong>~39-point introspection error, in the optimistic
+  direction.</strong></p>
+  <p class="small muted">Play this straight: METR publishes an explicit list of claims it does
+  <em>not</em> support, the tooling was early-2025, and their 2026 follow-up reportedly estimates
+  ~+18% speedup. The sign flipped. <strong>The perception gap didn't.</strong> Anyone quoting "AI makes
+  developers slower" as current fact is misusing this; anyone citing the reversal as vindication is
+  dropping the part that survived.</p>
+  <aside class="notes">The relevance to review: the decision to stop reviewing is made on a feeling
+  that things are fine. This is the one input we know is unreliable, by about forty points.</aside>
+</section>
+
+<!-- 12 · The bobsled -->
+<section>
+  <div class="kicker coral">Act 3 · The Evidence</div>
+  <h2>Drift is structural, so willpower isn't a plan</h2>
+  <div class="cols">
+    <div>
+      <div class="msg claude"><span class="who">Simon Willison · 2025-03-19</span>
+      "My golden rule for production-quality AI-assisted programming is that I won't commit any code to
+      my repository if I couldn't explain exactly what it does to somebody else."</div>
+    </div>
+    <div>
+      <div class="msg user override"><span class="who">Simon Willison · 2026-05-06</span>
+      "as the coding agents get more reliable, I'm not reviewing every line of code that they write
+      anymore, even for my production level stuff… <strong>And now I've got that feeling of
+      guilt.</strong>"</div>
+    </div>
+  </div>
+  <p style="margin-top:0.9em">Fourteen months. No announced change of mind. Guilt intact — which means
+  the standard survived and the behaviour didn't. Meanwhile AI-authored PRs already sit
+  <strong>4.6× longer in review</strong>: "review everything" isn't a policy being executed, it's one
+  quietly failing while still on the books.</p>
+  <p class="small muted">Lemmer-Webber's bobsled: "the vehicle is the LLM, you are the passenger…
+  <strong>More than just a slippery slope, it is a pre-crafted journey.</strong>" Not a fallacy — a
+  repeatedly observed dispositional change.</p>
+  <aside class="notes">The convergence nobody notices: Uncle Bob reaches "don't rely on humans reading"
+  because humans are slow and weak at code. Lemmer-Webber reaches the same conclusion because humans
+  get carried off by the gradient. Opposite premises, opposite sympathies, identical operational
+  conclusion — put the enforcement in the machinery.</aside>
+</section>
+
+<!-- 13 · Tier the question -->
+<section>
+  <div class="kicker">Act 4 · What To Do</div>
+  <h2>Only one version of the question survives</h2>
+  <table class="tbl">
+    <thead><tr><th>Tier</th><th>Definition</th><th>Before code was cheap</th></tr></thead>
+    <tbody>
+      <tr><td class="who">A</td><td>Throwaway. Answers a question, then dies.</td><td class="weak">didn't exist — too expensive to write</td></tr>
+      <tr><td class="who">B</td><td>You'd like it to work. Failure is annoying.</td><td class="weak">rare</td></tr>
+      <tr><td class="who">C</td><td>It had better work. Failure means real damage.</td><td>where most effort went</td></tr>
+      <tr class="tierD"><td class="who">D</td><td>If it's wrong, someone dies or a business ends.</td><td>where the rest went</td></tr>
+    </tbody>
+  </table>
+  <div class="prompt" style="margin-top:0.9em"><span class="plabel">Browne's inversion</span>
+  "If your code is so important that every single line needs to be verified because it could get
+  people killed — you should be writing an unbelievable amount of slop. <strong>Not to put in your
+  product, but to verify your product.</strong>"</div>
+  <p class="small muted">Review used to be the best-value quality mechanism because tests were
+  expensive too. Generation cost collapsed; <strong>human attention didn't</strong>. So the higher the
+  tier of what ships, the more disposable code you should generate around it.</p>
+  <aside class="notes">Everyone in the debate already tiers implicitly — Hashimoto for Ghostty, Bob
+  "according to criticality", old-coder scaling gauntlet depth by risk. This just makes it explicit.</aside>
+</section>
+
+<!-- 14 · The policy -->
+<section>
+  <div class="kicker">Act 4 · What To Do</div>
+  <h2>The policy the debate forgot to write</h2>
+  <table class="tbl">
+    <thead><tr><th>Tier</th><th>What blocks the merge</th><th>What a human reads</th><th>Blast radius</th></tr></thead>
+    <tbody>
+      <tr><td class="who">A</td><td class="weak">nothing — don't review, don't merge, delete it</td><td class="weak">nothing. Reading it is the waste</td><td>zero by construction — no prod creds, no shared state</td></tr>
+      <tr><td class="who">B</td><td>gauntlet green: tests, types, lint, changed-line coverage</td><td>the per-file <strong>diff summary</strong>, not the diff</td><td>recoverable by redeploy; feature-flag anything visible</td></tr>
+      <tr><td class="who">C</td><td>gauntlet + a <strong>human-approved spec before code exists</strong></td><td class="win">the interface layer, exhaustively — APIs, types, schemas, migrations, auth boundaries. <em>Not</em> every line of implementation</td><td>staged rollout, reversible migrations, alerts before users</td></tr>
+      <tr class="tierD"><td class="who">D</td><td>all of C + adversarial review of the <em>design</em></td><td class="win">all of it, twice, by two people — buying traceability and operability, not defect detection</td><td>assume the change is wrong; design containment first</td></tr>
+    </tbody>
+  </table>
+  <p class="dnote" style="text-align:left">Middle column is the one the whole argument skipped. Tier C
+  reads interfaces because they <strong>constrain everything downstream</strong> — a small read with
+  large coverage.</p>
+  <aside class="notes">Tier C is where most professional work lives, and it explicitly does not require
+  reading every line. That's the concession to the gauntlet school, and the evidence supports it.
+  Note tier D reads everything while knowing full reading is a poor bug detector — because there you're
+  buying something else.</aside>
+</section>
+
+<!-- 15 · Rules + limits -->
+<section>
+  <div class="kicker amber">Act 4 · What To Do</div>
+  <h2>Three rules, and two things this still doesn't fix</h2>
+  <ul class="principles">
+    <li><span class="n">1</span><strong>Assign the tier before the work starts.</strong>
+      <span class="why">Under delivery pressure everything reclassifies downward. Decide while you're calm.</span></li>
+    <li><span class="n">2</span><strong>Gates block; they don't warn.</strong>
+      <span class="why">A warning is a request for willpower — and willpower is the input the evidence says gets withdrawn.</span></li>
+    <li><span class="n">3</span><strong>Review is budgeted or it doesn't exist.</strong>
+      <span class="why">Name the person, the hours, and what happens to the release if they don't finish. Organisations reward output volume and cannot reward review — so a PR too big to review gets approved <em>because</em> it's too big.</span></li>
+  </ul>
+  <div class="cards" style="margin-top:0.6em">
+    <div class="card">
+      <h3>Still open · Operability</h3>
+      <p>Bought at C and D, abandoned at B — fine until a tier-B service becomes load-bearing without
+      being reclassified.</p>
+    </div>
+    <div class="card">
+      <h3>Still open · Shared understanding</h3>
+      <p>No per-change gate can produce it. Needs its own standing mechanisms: design docs humans argue
+      about, architecture review of intent, rotating ownership, duplication metrics.</p>
+    </div>
+  </div>
+  <aside class="notes">Rule 3 is the one that decides this in practice, and it isn't an engineering
+  question at all. Also worth saying out loud: above some tier a regulator has already answered — EU
+  AI Act high-risk duties, and DO-178C's requirement that every line trace to a requirement and back,
+  which a no-human-read workflow structurally cannot produce.</aside>
+</section>
+
+<!-- 16 · Wrap -->
+<section>
+  <div class="kicker amber">Wrap Up</div>
+  <h2>What actually came out of the argument</h2>
+  <ul class="takeaways">
+    <li><strong>Nobody stopped reading — the trust moved.</strong> Gherkin, a SPEC, the interface
+      layer, a generated walkthrough. Ask which artefact carries the trust, not whether to read.
+      <span class="sub">Any workflow claiming to have removed human judgement has hidden where it went.</span></li>
+    <li><strong>Review was four jobs.</strong> Bug-finding is being automated. Security is unsolved by
+      both camps. Operability and shared understanding have no mechanism at all.
+      <span class="sub">And those two degrade without emitting a signal — that's the real risk.</span></li>
+    <li><strong>Don't build policy on discipline.</strong> The most careful practitioner in the field
+      reversed himself in fourteen months and felt guilty about it.
+      <span class="sub">Both camps converge here from opposite premises: put enforcement in the machinery.</span></li>
+    <li><strong>The more critical the code, the more slop you should generate around it.</strong>
+      <span class="sub">Cheap code inverts the safety argument. Spend attention on interfaces; spend generation on harnesses.</span></li>
+  </ul>
+  <p class="small muted" style="margin-top:0.5em">Unanswered by anyone: is an agent-generated
+  walkthrough equivalent to acquired understanding <strong>under incident pressure</strong>? And can
+  the coherence tax be instrumented as a duplication trend? The debate's largest claim is entirely
+  unmeasured.</p>
+  <aside class="notes">Close on the open questions rather than a verdict — the honest position is that
+  two of the four jobs have no answer yet, and the field hasn't even tried to measure the biggest one.</aside>
+</section>
+
+</div>
+</div>
+<script>
